@@ -1,0 +1,21 @@
+# Node.js dependencies
+frontend/node_modules/
+backend/node_modules/
+smart-contracts/node_modules/
+
+# Build outputs
+frontend/dist/
+backend/build/
+
+# Environment variables
+frontend/.env
+backend/.env
+smart-contracts/.env
+
+# Logs
+*.log
+logs/
+
+# Artifacts
+backend/artifacts/
+smart-contracts/artifacts/
