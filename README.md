@@ -85,7 +85,7 @@ BlockPages/
 ### 🧑‍💻 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/blockpages.git
+git clone https://github.com/LegionofMany/blockpages.git
 cd blockpages
 ```
 
