@@ -5,6 +5,15 @@ const WalletSchema = new mongoose.Schema(
     isFlagged: { type: Boolean, default: false },
     rating: { type: String, enum: ["Poor", "Good", "Qualified"], default: "Good" },
     reason: { type: String },
+    name: { type: String },
+    phone: { type: String, unique: true, sparse: true },
+    info: { type: String },
+    region: {
+      country: { type: String },
+      continent: { type: String },
+      state: { type: String },
+      city: { type: String }
+    }, // <-- add comma here to fix lint error
   },
   {
     timestamps: true, // Automatically manage createdAt and updatedAt

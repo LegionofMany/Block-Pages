@@ -87,4 +87,39 @@ export async function getWalletFlaggedCount(contract, walletAddress) {
   }
 }
 
+// Add this function to allow controllers to fetch wallet info from the contract
+export async function getWalletInfoFromContract(walletAddress) {
+  const ABI = require("../artifacts/contracts/BlockPages.sol/BlockPages.json").abi;
+  if (!process.env.RPC_URL || !process.env.PRIVATE_KEY) {
+    throw new Error("Missing RPC_URL or PRIVATE_KEY in environment variables.");
+  }
+  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+  return await getWalletInfo(contract, walletAddress);
+}
+
+// Fetch all flagged wallets from the smart contract by scanning a range of addresses (for demo purposes)
+export async function getAllFlaggedWalletsOnChain() {
+  const ABI = require("../artifacts/contracts/BlockPages.sol/BlockPages.json").abi;
+  if (!process.env.RPC_URL || !process.env.PRIVATE_KEY) {
+    throw new Error("Missing RPC_URL or PRIVATE_KEY in environment variables.");
+  }
+  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+
+  // NOTE: This demo assumes you have a way to enumerate wallet addresses. In production, use events or an indexer.
+  // Here, we scan the last 1000 flagged events for unique addresses.
+  const filter = contract.filters.WalletFlagged();
+  const events = await contract.queryFilter(filter, -10000); // last 10,000 blocks
+  const flaggedAddresses = [...new Set(events.map(e => e.args.wallet.toLowerCase()))];
+  // Fetch info for each flagged wallet
+  const flaggedWallets = await Promise.all(flaggedAddresses.map(async (address) => {
+    const info = await getWalletInfo(contract, address);
+    return { address, ...info };
+  }));
+  return flaggedWallets;
+}
+
 main().catch(console.error);

@@ -3,6 +3,11 @@ import rateLimit from 'express-rate-limit';
 import userRoutes from './routes/userRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import directoryRoutes from './routes/directoryRoutes.js';
+import faqRoutes from './routes/faqRoutes.js';
+import assistanceRoutes from './routes/assistanceRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 import { EvmChain } from '@moralisweb3/common-evm-utils';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -49,6 +54,11 @@ db()
     app.use('/api/users', userRoutes);
     app.use('/api/ai', aiRoutes);
     app.use('/api/wallets', walletRoutes);
+    app.use('/api/auth', authRoutes);
+    app.use('/api/directory', directoryRoutes);
+    app.use('/api/faqs', faqRoutes);
+    app.use('/api/assistance', assistanceRoutes);
+    app.use('/api/analytics', analyticsRoutes);
 
     // Global Error Handler
     app.use((err, req, res, next) => {

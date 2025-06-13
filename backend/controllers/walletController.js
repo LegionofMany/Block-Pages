@@ -1,39 +1,53 @@
+import { validationResult } from "express-validator";
+import { getWalletInfoFromContract, getAllFlaggedWalletsOnChain } from "../services/contractService.js";
 import Wallet from "../models/Wallet.js";
-import {
-  flagWallet as flagWalletInContract,
-  rateWallet as rateWalletInContractService, // Renamed to avoid conflict
-  getWalletInfo as getWalletInfoFromContract,
-  getWalletRating as getWalletRatingFromContract,
-  getWalletFlaggedCount as getWalletFlaggedCountFromContract,
-} from "../services/contractService.js";
+
+/**
+ * Controller for wallet-related API endpoints.
+ * Handles flagged wallets, wallet info, flagging, rating, and contract integration.
+ * Uses express-validator for input validation.
+ */
+
+/**
+ * Get all flagged wallets, including contract info.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const getFlaggedWallets = async (req, res) => {
   try {
     // Fetch flagged wallets from MongoDB
-    const wallets = await Wallet.find({ isFlagged: true });
-    // Enhance with data from the smart contract
-    const flaggedWalletsWithInfo = await Promise.all(
-      wallets.map(async (wallet) => {
-        try {
-          const walletInfo = await getWalletInfoFromContract(wallet.address);
-          return {
-            ...wallet.toObject(),
-            flaggedCount: walletInfo.flaggedCount,
-            rating: walletInfo.rating,
-          };
-        } catch (error) {
-          console.error(`Error fetching smart contract info for ${wallet.address}:`, error);
-          // Return wallet data even if smart contract fetch fails
-          return wallet.toObject();
-        }
-      })
-    );
-    res.json(flaggedWalletsWithInfo);
+    const dbWallets = await Wallet.find({ isFlagged: true });
+    const dbWalletsMap = new Map(dbWallets.map(w => [w.address.toLowerCase(), w.toObject()]));
+
+    // Fetch flagged wallets from the smart contract
+    let onChainWallets = [];
+    try {
+      onChainWallets = await getAllFlaggedWalletsOnChain();
+    } catch (err) {
+      console.error("Error fetching on-chain flagged wallets:", err);
+    }
+    // Merge, removing duplicates (prefer DB info, add on-chain info if not in DB)
+    const merged = [
+      ...dbWallets.map(w => ({ ...w.toObject(), source: "db" })),
+      ...onChainWallets.filter(w => !dbWalletsMap.has(w.address.toLowerCase())).map(w => ({ ...w, source: "onchain" }))
+    ];
+    res.json(merged);
   } catch (err) {
     console.error("Error fetching flagged wallets:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
+/**
+ * Get wallet info from DB and contract.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const getWalletInfoWithContract = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: 'error', message: 'Validation failed', errors: errors.array() });
+  }
   try {
     const walletAddress = req.params.wallet;
     // Fetch wallet info from MongoDB
@@ -60,7 +74,17 @@ export const getWalletInfoWithContract = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+/**
+ * Flag a wallet in DB and contract.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const flagWalletInDatabaseAndContract = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: 'error', message: 'Validation failed', errors: errors.array() });
+  }
   const { walletAddress, reason } = req.body;
   try {
     // Flag wallet in MongoDB
@@ -88,7 +112,17 @@ export const flagWalletInDatabaseAndContract = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+/**
+ * Rate a wallet in the contract.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const rateWalletInContract = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: 'error', message: 'Validation failed', errors: errors.array() });
+  }
   const { walletAddress, rating } = req.body;
   try {
     // Rate wallet in the smart contract
@@ -99,7 +133,17 @@ export const rateWalletInContract = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+/**
+ * Fetch wallet rating from contract.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const fetchWalletRating = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: 'error', message: 'Validation failed', errors: errors.array() });
+  }
   const walletAddress = req.params.wallet;
   try {
     // Get wallet rating from the smart contract
@@ -111,7 +155,17 @@ export const fetchWalletRating = async (req, res) => {
     res.json({ rating: 0 });
   }
 };
+
+/**
+ * Fetch wallet flagged count from contract.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const fetchWalletFlaggedCount = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: 'error', message: 'Validation failed', errors: errors.array() });
+  }
   const walletAddress = req.params.wallet;
   try {
     // Get wallet flagged count from the smart contract

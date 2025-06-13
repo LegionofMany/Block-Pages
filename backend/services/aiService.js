@@ -9,6 +9,24 @@ import { Graph } from 'graphlib';
 import { config } from "dotenv";
 import pkg from 'lstmjs';
 const { LSTM } = pkg;
+import axios from "axios";
+
+const ETHERSCAN_API = process.env.ETHERSCAN_API || "https://api.etherscan.io/api";
+const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || "";
+
+// Example: Scrape wallet info from Etherscan (or similar block explorer)
+export async function scrapeWalletInfo(walletAddress) {
+  // Example: Get ETH balance and tx count
+  const [balanceRes, txRes] = await Promise.all([
+    axios.get(`${ETHERSCAN_API}?module=account&action=balance&address=${walletAddress}&tag=latest&apikey=${ETHERSCAN_KEY}`),
+    axios.get(`${ETHERSCAN_API}?module=account&action=txlist&address=${walletAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_KEY}`)
+  ]);
+  return {
+    balance: balanceRes.data.result,
+    txCount: txRes.data.result.length,
+    lastTx: txRes.data.result[0] || null
+  };
+}
 
 const analyze = async (walletAddress) => {
     // Retrieve transaction history data

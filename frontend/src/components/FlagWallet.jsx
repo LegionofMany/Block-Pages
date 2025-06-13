@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
-import { flagWallet } from '../services/api';
+import { flagWallet, logAnalyticsEvent } from '../services/api';
+import PropTypes from 'prop-types';
 
-function FlagWallet({ walletAddress }) {
+function FlagWallet({ walletAddress, showToast }) {
   const [flagging, setFlagging] = useState(false);
   const [flaggingError, setFlaggingError] = useState('');
   const [flaggingSuccess, setFlaggingSuccess] = useState('');
@@ -16,16 +16,19 @@ function FlagWallet({ walletAddress }) {
     if (reason) {
       try {
         await flagWallet(walletAddress, reason);
+        logAnalyticsEvent("wallet_flag", { walletAddress, reason });
         setFlaggingSuccess('Wallet flagged successfully!');
-        // Optionally: You might want to trigger a refresh of wallet data or a list of flagged wallets here
+        if (showToast) showToast('Wallet flagged successfully!', 'success');
       } catch (error) {
         console.error('Error flagging wallet:', error);
         setFlaggingError('Error flagging wallet.');
+        if (showToast) showToast('Error flagging wallet.', 'error');
       } finally {
         setFlagging(false);
       }
     } else {
       setFlaggingError('Reason is required to flag a wallet.');
+      if (showToast) showToast('Reason is required to flag a wallet.', 'error');
     }
   };
 
@@ -35,6 +38,7 @@ function FlagWallet({ walletAddress }) {
         onClick={handleFlagWallet}
         className="button"  // Use the 'button' class from index.css
         disabled={flagging}
+        aria-label="Flag Wallet"
       >
         {flagging ? 'Flagging...' : 'Flag Wallet'}
       </button>
@@ -43,5 +47,10 @@ function FlagWallet({ walletAddress }) {
     </div>
   );
 }
+
+FlagWallet.propTypes = {
+  walletAddress: PropTypes.string.isRequired,
+  showToast: PropTypes.func,
+};
 
 export default FlagWallet;

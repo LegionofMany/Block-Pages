@@ -1,7 +1,8 @@
 import Moralis from "moralis";
+import { getMoralisApiKey } from "./env";
 
 Moralis.start({
-  apiKey: import.meta.env.VITE_MORALIS_API_KEY,
+  apiKey: getMoralisApiKey(),
 });
 
 // Get wallet balance
