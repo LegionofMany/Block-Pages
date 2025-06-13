@@ -1,81 +1,36 @@
+# 💡 BlockPages 411 — The Global Web3 Wallet Directory & Assistance dApp
 
-# 💡 BlockPages — The Global Web3 Wallet Directory
-
-BlockPages is a decentralized application designed to act as a **modern wallet directory** — offering wallet ratings, fraud flagging, and AI-backed transaction monitoring across multiple blockchain networks like **Ethereum, BSC, and Polygon**.
-
-This platform helps users flag suspicious wallets, rate trusted wallets, and improves transparency in blockchain ecosystems by combining AI transaction analysis with smart contract enforcement.
+BlockPages 411 is a professional, global "411 for web3" wallet directory and assistance platform. It features region-based wallet search, fraud flagging, wallet rating, AI-powered wallet info scraping, user authentication, admin tools, analytics dashboard with visualizations, and notifications—all with modern UI and robust backend/frontend integration.
 
 ---
 
-## ⚙️ **Project Status**
+## 🚀 Key Features
 
-| Status           | Progress  |
-|------------------|-----------|
-| 🚧 In Development | ~70% Complete |
-
-**Smart Contract Deployment:** ✅  
-**Backend Server Running:** ✅  
-**Backend ↔ Smart Contract Integration:** 🔥 *Pending Final Wiring*  
-**Frontend UI:** 70% functional  
-**AI Transaction Scraper:** Early stage  
-**Notification System:** Planned  
-**Admin Dashboard:** Planned  
+- **Region-Based Directory:** Search and filter wallets by continent, country, state, or city.
+- **Wallet Flagging & Rating:** Users can flag suspicious wallets and rate trusted ones (on-chain and off-chain).
+- **AI-Powered Wallet Info:** Scrapes wallet data (balance, tx count, last tx) from block explorers (Etherscan) and displays it in the directory.
+- **User Authentication:** Secure JWT-based login/register, user roles (user/admin), and protected routes.
+- **Admin Tools:**
+  - Directory management (add/edit/search wallets)
+  - FAQ management (add/edit/delete FAQs)
+  - Analytics dashboard with charts, filters, and export options
+- **411 Assistance:** FAQ and live question form, with AI/FAQ backend for instant answers.
+- **Analytics & Visualization:**
+  - Logs user actions (directory search, phone lookup, wallet flag/rate, 411 questions)
+  - Admin dashboard with event type charts, user distribution, time series, top flagged/rated wallets, and CSV/JSON export
+- **Notifications:** Toast notifications for user actions and errors.
+- **Modern UI/UX:** Built with React, Material UI, and Tailwind CSS for a beautiful, accessible experience.
+- **411 Branding:** Consistent "BlockPages 411" branding throughout the app.
 
 ---
 
-## 🗂 **Project Structure**
+## 🗂 Project Structure
 
 ```plaintext
 BlockPages/
-├── backend/                      # Backend Server (Node.js, Express, Moralis)
-│   ├── controllers/              # API Controllers
-│   │   ├── walletController.js
-│   │   ├── userController.js
-│   │   ├── aiController.js
-│   ├── models/                   # MongoDB Schemas
-│   │   ├── User.js
-│   │   ├── Wallet.js
-│   │   ├── Transaction.js
-│   ├── routes/                   # Express Routes
-│   │   ├── walletRoutes.js
-│   │   ├── userRoutes.js
-│   │   ├── aiRoutes.js
-│   ├── services/                 # Business Logic
-│   │   ├── moralisService.js
-│   │   ├── aiService.js
-│   │   ├── contractService.js
-│   ├── utils/                    # Helpers
-│   │   ├── db.js
-│   │   ├── responseHelper.js
-│   ├── server.js                 # Express App Starter
-│   └── .env                      # Environment Variables
-│
-├── frontend/                     # Frontend (React.js + Tailwind CSS)
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── WalletChecker.jsx
-│   │   │   ├── FlaggedWallets.jsx
-│   │   │   ├── Navbar.jsx
-│   │   ├── services/
-│   │   │   ├── api.js
-│   │   │   ├── moralisService.js
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── WalletSearch.jsx
-│   │   │   ├── Flagged.jsx
-│   │   ├── App.js
-│   │   ├── index.js
-│   │   └── styles.css
-│   └── .env
-│
-├── smart-contracts/              # Solidity Smart Contracts
-│   ├── contracts/
-│   │   ├── BlockPages.sol
-│   ├── scripts/
-│   │   ├── deploy.js
-│   │   ├── interact.js
-│   ├── hardhat.config.js
-│   └── package.json
+├── backend/         # Node.js, Express, MongoDB, Moralis, AI, API
+├── frontend/        # React, Material UI, Tailwind, Analytics, 411 UI
+├── smart-contracts/ # Solidity, Hardhat, On-chain wallet logic
 ```
 
 ---
@@ -85,7 +40,7 @@ BlockPages/
 ### 🧑‍💻 Clone the Repository
 
 ```bash
-git clone https://github.com/LegionofMany/blockpages.git
+git clone https://github.com/YOUR_GITHUB_USERNAME/blockpages.git
 cd blockpages
 ```
 
@@ -140,6 +95,17 @@ npm start
 
 ---
 
+## 📊 Analytics Dashboard (Admin)
+- Visualizes user actions: directory search, phone lookup, wallet flag/rate, 411 questions
+- Interactive filters (event type, date range)
+- Event type distribution (bar chart)
+- User distribution (pie chart)
+- Events over time (line chart)
+- Top flagged and rated wallets
+- Export analytics as CSV or JSON
+
+---
+
 ## 💡 **How to Apply the Project for Completion**
 
 1️⃣ **Backend ↔ Smart Contract Integration**  
@@ -187,3 +153,7 @@ See `LICENSE.md` (coming soon!) for full terms.
 ## 📣 **Disclaimer**
 
 This project is under development — not production-ready. Use at your own risk until officially audited and released.
+
+---
+
+# For more, see in-app documentation and admin dashboard.
