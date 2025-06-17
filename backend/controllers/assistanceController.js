@@ -1,8 +1,8 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import { validationResult } from "express-validator";
 import Faq from "../models/Faq.js";
 
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY }));
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const ask411 = async (req, res) => {
   const errors = validationResult(req);
@@ -14,14 +14,14 @@ export const ask411 = async (req, res) => {
   if (match) return res.json({ answer: match.answer, source: "faq" });
   // Fallback to OpenAI
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a helpful web3/crypto assistant for BlockPages 411." },
         { role: "user", content: question }
       ]
     });
-    const answer = completion.data.choices[0].message.content;
+    const answer = completion.choices[0].message.content;
     res.json({ answer, source: "ai" });
   } catch (err) {
     res.status(500).json({ error: "AI unavailable. Please try again later." });

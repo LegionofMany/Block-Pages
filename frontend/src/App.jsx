@@ -15,6 +15,7 @@ import AdminDirectory from "./pages/AdminDirectory";
 import Assistance411 from "./pages/Assistance411";
 import AdminFaq from "./pages/AdminFaq";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const [toast, setToast] = useState({ message: "", type: "info" });
@@ -32,19 +33,89 @@ function App() {
       <Toast message={toast.message} type={toast.type} onClose={handleToastClose} />
       <div className="container mx-auto p-4">
         <Routes>
-          <Route path="/" element={<Home showToast={showToast} />} />
-          <Route path="/search" element={<WalletSearch showToast={showToast} />} />
-          <Route path="/flagged" element={<Flagged showToast={showToast} />} />
-          <Route path="/directory" element={<Directory />} />
-          <Route path="/phone-lookup" element={<PhoneLookup />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register onRegister={() => {}} />} />
-          <Route path="/account" element={<Account user={user} />} />
-          <Route path="/admin-directory" element={<AdminDirectory />} />
-          <Route path="/assistance" element={<Assistance411 />} />
-          <Route path="/admin-faq" element={<AdminFaq />} />
-          <Route path="/admin-analytics" element={<AdminAnalytics />} />
           <Route path="*" element={<NotFound />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute user={user}>
+                <Home showToast={showToast} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <PrivateRoute user={user}>
+                <WalletSearch showToast={showToast} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/flagged"
+            element={
+              <PrivateRoute user={user}>
+                <Flagged showToast={showToast} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/directory"
+            element={
+              <PrivateRoute user={user}>
+                <Directory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/phone-lookup"
+            element={
+              <PrivateRoute user={user}>
+                <PhoneLookup />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute user={user}>
+                <Account user={user} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-directory"
+            element={
+              <PrivateRoute user={user}>
+                <AdminDirectory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/assistance"
+            element={
+              <PrivateRoute user={user}>
+                <Assistance411 />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-faq"
+            element={
+              <PrivateRoute user={user}>
+                <AdminFaq />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-analytics"
+            element={
+              <PrivateRoute user={user}>
+                <AdminAnalytics />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>

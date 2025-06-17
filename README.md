@@ -40,7 +40,7 @@ BlockPages/
 ### 🧑‍💻 Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/blockpages.git
+git clone https://github.com/LegionofMany/blockpages.git
 cd blockpages
 ```
 
