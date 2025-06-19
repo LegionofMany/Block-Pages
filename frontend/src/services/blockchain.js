@@ -1,11 +1,18 @@
 import { ethers } from "ethers";
 
+const INFURA_KEY = import.meta.env.VITE_INFURA_KEY;
+
 // Supported networks
 export const NETWORKS = {
   ethereum: {
     chainId: 1,
     name: "Ethereum Mainnet",
-    rpc: "https://mainnet.infura.io/v3/YOUR_INFURA_KEY"
+    rpc: `https://mainnet.infura.io/v3/${INFURA_KEY}`
+  },
+  sepolia: {
+    chainId: 11155111,
+    name: "Ethereum Sepolia Testnet",
+    rpc: `https://sepolia.infura.io/v3/${INFURA_KEY}` // Replace with your real Infura key
   },
   bsc: {
     chainId: 56,
@@ -19,7 +26,7 @@ export const NETWORKS = {
   }
 };
 
-export function getProvider(network = "ethereum") {
+export function getProvider(network = "sepolia") {
   const net = NETWORKS[network];
   return new ethers.JsonRpcProvider(net.rpc);
 }

@@ -8,6 +8,7 @@ import directoryRoutes from './routes/directoryRoutes.js';
 import faqRoutes from './routes/faqRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import charityRoutes from './routes/charityRoutes.js';
 import { EvmChain } from '@moralisweb3/common-evm-utils';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -59,6 +60,7 @@ db()
     app.use('/api/faqs', faqRoutes);
     app.use('/api/assistance', assistanceRoutes);
     app.use('/api/analytics', analyticsRoutes);
+    app.use('/api/charities', charityRoutes);
 
     // Global Error Handler
     app.use((err, req, res, next) => {

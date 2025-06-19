@@ -16,6 +16,9 @@ import Assistance411 from "./pages/Assistance411";
 import AdminFaq from "./pages/AdminFaq";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import PrivateRoute from "./components/PrivateRoute";
+import GivingBlockCharities from "./components/GivingBlockCharities";
+import Footer from "./components/Footer";
+import BlockPagesLogo from "./components/BlockPagesLogo";
 
 function App() {
   const [toast, setToast] = useState({ message: "", type: "info" });
@@ -30,93 +33,105 @@ function App() {
   return (
     <Router>
       <Navbar user={user} onLogout={handleLogout} />
-      <Toast message={toast.message} type={toast.type} onClose={handleToastClose} />
-      <div className="container mx-auto p-4">
-        <Routes>
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/register" element={<Register onRegister={() => {}} />} />
-          <Route path="*" element={<NotFound />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute user={user}>
-                <Home showToast={showToast} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/search"
-            element={
-              <PrivateRoute user={user}>
-                <WalletSearch showToast={showToast} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/flagged"
-            element={
-              <PrivateRoute user={user}>
-                <Flagged showToast={showToast} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/directory"
-            element={
-              <PrivateRoute user={user}>
-                <Directory />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/phone-lookup"
-            element={
-              <PrivateRoute user={user}>
-                <PhoneLookup />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account"
-            element={
-              <PrivateRoute user={user}>
-                <Account user={user} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin-directory"
-            element={
-              <PrivateRoute user={user}>
-                <AdminDirectory />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/assistance"
-            element={
-              <PrivateRoute user={user}>
-                <Assistance411 />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin-faq"
-            element={
-              <PrivateRoute user={user}>
-                <AdminFaq />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin-analytics"
-            element={
-              <PrivateRoute user={user}>
-                <AdminAnalytics />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
+      <div className="app-content">
+        <BlockPagesLogo style={{ margin: '2rem auto 1rem auto', display: 'block' }} />
+        <Toast message={toast.message} type={toast.type} onClose={handleToastClose} />
+        <div className="container mx-auto p-4">
+          <Routes>
+            <Route path="/login" element={<Login onLogin={handleLogin} showToast={showToast} />} />
+            <Route path="/register" element={<Register onRegister={() => {}} showToast={showToast} />} />
+            <Route path="*" element={<NotFound />} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute user={user}>
+                  <Home showToast={showToast} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <PrivateRoute user={user}>
+                  <WalletSearch showToast={showToast} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/flagged"
+              element={
+                <PrivateRoute user={user}>
+                  <Flagged showToast={showToast} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/directory"
+              element={
+                <PrivateRoute user={user}>
+                  <Directory />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/phone-lookup"
+              element={
+                <PrivateRoute user={user}>
+                  <PhoneLookup />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <PrivateRoute user={user}>
+                  <Account user={user} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-directory"
+              element={
+                <PrivateRoute user={user}>
+                  <AdminDirectory />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/assistance"
+              element={
+                <PrivateRoute user={user}>
+                  <Assistance411 />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-faq"
+              element={
+                <PrivateRoute user={user}>
+                  <AdminFaq />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-analytics"
+              element={
+                <PrivateRoute user={user}>
+                  <AdminAnalytics />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/charities"
+              element={
+                <PrivateRoute user={user}>
+                  <GivingBlockCharities />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </Router>
   );

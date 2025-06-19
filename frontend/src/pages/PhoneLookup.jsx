@@ -25,30 +25,32 @@ export default function PhoneLookup() {
   };
 
   return (
-    <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Phone Number Lookup</Typography>
-      <form onSubmit={handleLookup} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <TextField
-          label="Phone Number"
-          value={phone}
-          onChange={e => setPhone(e.target.value)}
-          fullWidth
-        />
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          Lookup
-        </Button>
-      </form>
-      {error && <Typography color="error">{error}</Typography>}
-      {result && (
-        <Card>
-          <CardContent>
-            <Typography variant="h6">{result.name || "No Name"}</Typography>
-            <Typography>Wallet: {result.address}</Typography>
-            <Typography>Phone: {result.phone || "-"}</Typography>
-            <Typography>Info: {result.info || "-"}</Typography>
-          </CardContent>
-        </Card>
-      )}
+    <Box className="blockchain-page-card">
+      <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+        <Typography variant="h4" gutterBottom>Phone Number Lookup</Typography>
+        <form onSubmit={handleLookup} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          <TextField
+            label="Phone Number"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            fullWidth
+          />
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+            Lookup
+          </Button>
+        </form>
+        {error && <Typography color="error">{error}</Typography>}
+        {result && (
+          <Card>
+            <CardContent>
+              <Typography variant="h6">{result.name || "No Name"}</Typography>
+              <Typography>Wallet: {result.address}</Typography>
+              <Typography>Phone: {result.phone || "-"}</Typography>
+              <Typography>Info: {result.info || "-"}</Typography>
+            </CardContent>
+          </Card>
+        )}
+      </Box>
     </Box>
   );
 }

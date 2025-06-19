@@ -18,6 +18,9 @@ function Navbar({ user, onLogout }) {
             Flagged Wallets
           </Button>
           <Button color="inherit" component={Link} to="/assistance">411 Assistance</Button>
+          <Button color="inherit" component={Link} to="/charities">
+            Crypto Charities
+          </Button>
           {user ? (
             <>
               <Button color="inherit" component={Link} to="/account">
@@ -28,9 +31,14 @@ function Navbar({ user, onLogout }) {
               </Button>
             </>
           ) : (
-            <Button color="inherit" component={Link} to="/login">
-              Login
-            </Button>
+            <>
+              <Button color="inherit" component={Link} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={Link} to="/register">
+                Register
+              </Button>
+            </>
           )}
           {user?.role === "admin" && (
             <Button color="inherit" component={Link} to="/admin-directory">Admin Directory</Button>

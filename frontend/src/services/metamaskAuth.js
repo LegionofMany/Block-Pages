@@ -10,6 +10,8 @@ export async function signInWithMetaMask() {
     method: "personal_sign",
     params: [message, address],
   });
+  // Debug log
+  console.log({ address, message, signature });
   // Send to backend for verification and JWT
   const res = await axios.post(`${API_URL}/api/auth/metamask`, { address, message, signature });
   return res.data; // Should return { token, user }

@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { login } from "../services/api";
 import { signInWithMetaMask } from "../services/metamaskAuth";
+import { useNavigate } from "react-router-dom";
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, showToast }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,8 +19,14 @@ export default function Login({ onLogin }) {
     try {
       const res = await login(email, password);
       onLogin(res);
+      showToast && showToast("Login successful! Welcome back.", "success");
+      navigate("/"); // Redirect to home after successful login
     } catch (err) {
-      setError(err?.response?.data?.error || "Login failed");
+      if (err?.response?.status === 401) {
+        setError(err?.response?.data?.error || "User not found or invalid credentials. Please register.");
+      } else {
+        setError(err?.response?.data?.error || "Login failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -30,6 +38,8 @@ export default function Login({ onLogin }) {
     try {
       const res = await signInWithMetaMask();
       onLogin(res);
+      showToast && showToast("MetaMask login successful! Welcome back.", "success");
+      navigate("/"); // Redirect to home after successful login
     } catch (err) {
       setError(err.message || "MetaMask login failed");
     } finally {
@@ -38,8 +48,8 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 6 }}>
-      <Typography variant="h4" gutterBottom>Login</Typography>
+    <Box className="blockchain-auth-card" sx={{ maxWidth: 400, mx: "auto", mt: 6 }}>
+      <Typography variant="h4" gutterBottom align="center">Login</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           label="Email"
@@ -71,6 +81,28 @@ export default function Login({ onLogin }) {
       >
         {metaMaskLoading ? "Connecting..." : "Sign in with MetaMask"}
       </Button>
+      {error && error.includes("register") && (
+        <Button
+          variant="text"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+          onClick={() => navigate("/register")}
+        >
+          Register
+        </Button>
+      )}
+      {error && error.toLowerCase().includes("metamask") && (
+        <Button
+          variant="text"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+          onClick={() => navigate("/register")}
+        >
+          Trouble with MetaMask? Register with Email
+        </Button>
+      )}
     </Box>
   );
 }
