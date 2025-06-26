@@ -37,9 +37,14 @@ export default function Login({ onLogin, showToast }) {
     setError("");
     try {
       const res = await signInWithMetaMask();
-      onLogin(res);
-      showToast && showToast("MetaMask login successful! Welcome back.", "success");
-      navigate("/"); // Redirect to home after successful login
+      console.log('MetaMask backend response:', res);
+      if (res && res.user) {
+        onLogin(res);
+        showToast && showToast("MetaMask login successful! Welcome back.", "success");
+        navigate("/"); // Redirect to home after successful login
+      } else {
+        setError("MetaMask login failed: No user returned from backend.");
+      }
     } catch (err) {
       setError(err.message || "MetaMask login failed");
     } finally {

@@ -6,6 +6,7 @@ const moralisService = {
             const response = await Moralis.EvmApi.account.getTransactions({ address: walletAddress, chain: blockchainPlatform });
             return response.result;
         } catch (error) {
+            console.error('Moralis getTransactionHistory error:', error?.response?.data || error);
             throw new Error(`Failed to fetch transaction history for ${walletAddress} on ${blockchainPlatform}: ${error.message}`);
         }
     },
@@ -15,6 +16,7 @@ const moralisService = {
             const response = await Moralis.EvmApi.account.getBalance({ address: walletAddress, chain: blockchainPlatform });
             return response.result;
         } catch (error) {
+            console.error('Moralis getBalance error:', error?.response?.data || error);
             throw new Error(`Failed to fetch balance for ${walletAddress} on ${blockchainPlatform}: ${error.message}`);
         }
     },

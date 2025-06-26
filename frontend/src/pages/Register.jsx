@@ -35,13 +35,13 @@ export default function Register({ onRegister, showToast }) {
     setError("");
     try {
       const res = await signInWithMetaMask();
-      showToast && showToast("MetaMask registration successful! You are now logged in.", "success");
+      showToast && showToast("MetaMask registration successful! You can now log in.", "success");
       onRegister && onRegister(res);
-      navigate("/"); // Redirect to home after successful registration
+      navigate("/login"); // Always redirect to login after registration
     } catch (err) {
       if (err.response && err.response.status === 409) {
         setError("This wallet is already registered. Redirecting to login...");
-        setTimeout(() => navigate("/login"), 1500);
+        navigate("/login"); // Immediately redirect to login if already registered
       } else if (err.response && err.response.data && err.response.data.error) {
         setError("MetaMask registration failed: " + err.response.data.error);
       } else {
@@ -76,7 +76,7 @@ export default function Register({ onRegister, showToast }) {
       </Box>
       <Button onClick={handleMetaMaskRegister} variant="outlined" color="secondary" fullWidth disabled={metaMaskLoading} sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
         <img src={MetaMaskIcon} alt="MetaMask" style={{ width: 24, height: 24 }} />
-        {metaMaskLoading ? "Connecting to MetaMask..." : "Register with MetaMask"}
+        {metaMaskLoading ? "Connecting..." : "Register with MetaMask"}
       </Button>
       {error && metaMaskLoading && (
         <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>

@@ -27,7 +27,8 @@ function App() {
     setToast({ message, type });
   }, []);
   const handleToastClose = () => setToast({ message: "", type: "info" });
-  const handleLogin = (res) => setUser(res.user);
+  const handleLogin = (res) => setUser(res?.user || res);
+  const handleRegister = (res) => setUser(res?.user || res);
   const handleLogout = () => setUser(null);
 
   return (
@@ -39,7 +40,7 @@ function App() {
         <div className="container mx-auto p-4">
           <Routes>
             <Route path="/login" element={<Login onLogin={handleLogin} showToast={showToast} />} />
-            <Route path="/register" element={<Register onRegister={() => {}} showToast={showToast} />} />
+            <Route path="/register" element={<Register onRegister={handleRegister} showToast={showToast} />} />
             <Route path="*" element={<NotFound />} />
             <Route
               path="/"

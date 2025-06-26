@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { getWalletBalance, getWalletTransactions } from "../services/moralisService";
+import { getWalletBalanceBackend, getWalletTransactionsBackend } from "../services/moralisBackend";
 import { getWalletInfo } from "../services/api";
 
 function WalletChecker({ walletAddress, showToast }) {
@@ -15,11 +15,11 @@ function WalletChecker({ walletAddress, showToast }) {
       setLoading(true);
       setError(null);
       try {
-        const walletBalance = await getWalletBalance(walletAddress);
-        const walletTx = await getWalletTransactions(walletAddress);
+        const walletBalance = await getWalletBalanceBackend(walletAddress);
+        const walletTx = await getWalletTransactionsBackend(walletAddress);
         const walletInfo = await getWalletInfo(walletAddress);
         setBalance(walletBalance.balance / 1e18);
-        setTransactions(walletTx.result);
+        setTransactions(walletTx.result || walletTx);
         setWalletData(walletInfo);
       } catch (error) {
         setError("Error fetching wallet data.");
