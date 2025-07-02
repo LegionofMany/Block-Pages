@@ -17,5 +17,5 @@ smart-contracts/.env
 logs/
 
 # Artifacts
-backend/artifacts/
+# backend/artifacts/
 smart-contracts/artifacts/
