@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { register } from "../services/api";
 import { signInWithMetaMask } from "../services/metamaskAuth";
-import { useNavigate } from "react-router-dom";
-import MetaMaskIcon from '../assets/react.svg'; // Replace with actual MetaMask icon if available
+import MetaMaskIcon from '../assets/react.svg';
 
-export default function Register({ onRegister, showToast }) {
+const Register = ({ onRegister, showToast }) => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -22,7 +20,7 @@ export default function Register({ onRegister, showToast }) {
       await register(form);
       showToast && showToast("Registration successful! You can now log in.", "success");
       onRegister && onRegister();
-      navigate("/login");
+      // Use router.push('/login') if you want to redirect
     } catch (err) {
       setError(err?.response?.data?.error || "Registration failed");
     } finally {
@@ -37,11 +35,11 @@ export default function Register({ onRegister, showToast }) {
       const res = await signInWithMetaMask();
       showToast && showToast("MetaMask registration successful! You can now log in.", "success");
       onRegister && onRegister(res);
-      navigate("/login");
+      // Use router.push('/login') if you want to redirect
     } catch (err) {
       if (err.response && err.response.status === 409) {
         setError("This wallet is already registered. Redirecting to login...");
-        navigate("/login");
+        // Use router.push('/login') if you want to redirect
       } else if (err.response && err.response.data && err.response.data.error) {
         setError("MetaMask registration failed: " + err.response.data.error);
       } else {
@@ -76,20 +74,8 @@ export default function Register({ onRegister, showToast }) {
         <img src={MetaMaskIcon} alt="MetaMask" style={{ width: 24, height: 24 }} />
         {metaMaskLoading ? "Connecting..." : "Register with MetaMask"}
       </Button>
-      {error && metaMaskLoading && (
-        <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
-      )}
-      {error && error.toLowerCase().includes("metamask") && (
-        <Button
-          variant="text"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-          onClick={() => navigate("/login")}
-        >
-          Trouble with MetaMask? Login with Email
-        </Button>
-      )}
     </Box>
   );
-}
+};
+
+export default Register;

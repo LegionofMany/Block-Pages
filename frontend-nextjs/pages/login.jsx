@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { login } from "../services/api";
 import { signInWithMetaMask } from "../services/metamaskAuth";
-import { useNavigate } from "react-router-dom";
 
-export default function Login({ onLogin, showToast }) {
+const Login = ({ onLogin, showToast }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,9 +16,9 @@ export default function Login({ onLogin, showToast }) {
     setError("");
     try {
       const res = await login(email, password);
-      onLogin(res);
+      onLogin && onLogin(res);
       showToast && showToast("Login successful! Welcome back.", "success");
-      navigate("/");
+      // Use router.push('/') if you want to redirect
     } catch (err) {
       if (err?.response?.status === 401) {
         setError(err?.response?.data?.error || "User not found or invalid credentials. Please register.");
@@ -38,9 +36,9 @@ export default function Login({ onLogin, showToast }) {
     try {
       const res = await signInWithMetaMask();
       if (res && res.user) {
-        onLogin(res);
+        onLogin && onLogin(res);
         showToast && showToast("MetaMask login successful! Welcome back.", "success");
-        navigate("/");
+        // Use router.push('/') if you want to redirect
       } else {
         setError("MetaMask login failed: No user returned from backend.");
       }
@@ -93,28 +91,8 @@ export default function Login({ onLogin, showToast }) {
       >
         {metaMaskLoading ? "Connecting..." : "Sign in with MetaMask"}
       </Button>
-      {error && error.includes("register") && (
-        <Button
-          variant="text"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-          onClick={() => navigate("/register")}
-        >
-          Register
-        </Button>
-      )}
-      {error && error.toLowerCase().includes("metamask") && (
-        <Button
-          variant="text"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-          onClick={() => navigate("/register")}
-        >
-          Trouble with MetaMask? Register with Email
-        </Button>
-      )}
     </Box>
   );
-}
+};
+
+export default Login;
