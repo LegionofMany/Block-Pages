@@ -5,7 +5,7 @@ import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { login } from "../../services/api";
 import { signInWithMetaMask } from "../../services/metamaskAuth";
 
-const Login = ({ onLogin, showToast }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,8 +18,7 @@ const Login = ({ onLogin, showToast }) => {
     setError("");
     try {
       const res = await login(email, password);
-      onLogin && onLogin(res);
-      showToast && showToast("Login successful! Welcome back.", "success");
+      // Optionally, implement local toast or redirect logic here
       // Use router.push('/') if you want to redirect
     } catch (err) {
       if (err?.response?.status === 401) {
@@ -38,8 +37,7 @@ const Login = ({ onLogin, showToast }) => {
     try {
       const res = await signInWithMetaMask();
       if (res && res.user) {
-        onLogin && onLogin(res);
-        showToast && showToast("MetaMask login successful! Welcome back.", "success");
+        // Optionally, implement local toast or redirect logic here
         // Use router.push('/') if you want to redirect
       } else {
         setError("MetaMask login failed: No user returned from backend.");
