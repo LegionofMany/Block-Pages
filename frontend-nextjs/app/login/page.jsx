@@ -1,13 +1,9 @@
+
 "use client";
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
-import { login } from "../services/api";
-import { signInWithMetaMask } from "../services/metamaskAuth";
-"use client";
-import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Alert } from "@mui/material";
-import { login } from "../services/api";
-import { signInWithMetaMask } from "../services/metamaskAuth";
+import { login } from "../../services/api";
+import { signInWithMetaMask } from "../../services/metamaskAuth";
 
 const Login = ({ onLogin, showToast }) => {
   const [email, setEmail] = useState("");

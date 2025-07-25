@@ -1,6 +1,7 @@
 "use client";
+"use client";
 import React, { useState } from "react";
-import { lookupByPhone, logAnalyticsEvent } from "../services/api";
+import { lookupByPhone, logAnalyticsEvent } from "../../services/api";
 import { TextField, Button, Card, CardContent, Typography, Box } from "@mui/material";
 
 export default function PhoneLookup() {

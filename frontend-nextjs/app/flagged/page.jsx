@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import FlaggedWallets from "../components/FlaggedWallets";
+import FlaggedWallets from "../../components/FlaggedWallets";
 import { Box } from '@mui/material';
 
 const FlaggedWallet = ({ showToast }) => {

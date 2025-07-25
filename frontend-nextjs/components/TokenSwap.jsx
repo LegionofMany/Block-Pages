@@ -1,6 +1,5 @@
-// ...existing code from frontend/src/components/TokenSwap.jsx...
-
 "use client";
+// ...existing code from frontend/src/components/TokenSwap.jsx...
 import React, { useState } from "react";
 import { Box, Typography, Select, MenuItem, TextField, Button, CircularProgress } from "@mui/material";
 import { NETWORKS } from "../services/blockchain";
