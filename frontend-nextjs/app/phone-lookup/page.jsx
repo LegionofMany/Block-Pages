@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { lookupByPhone, logAnalyticsEvent } from "../services/api";
 import { TextField, Button, Card, CardContent, Typography, Box } from "@mui/material";
@@ -53,7 +54,4 @@ export default function PhoneLookup() {
       </Box>
     </Box>
   );
-}
-export default function PhoneLookupPage() {
-  return <div className="container mx-auto p-8 text-white">Phone Lookup Page</div>;
 }

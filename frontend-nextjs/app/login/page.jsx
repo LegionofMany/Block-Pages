@@ -3,9 +3,19 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { login } from "../services/api";
 import { signInWithMetaMask } from "../services/metamaskAuth";
-};
+"use client";
+import React, { useState } from "react";
+import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import { login } from "../services/api";
+import { signInWithMetaMask } from "../services/metamaskAuth";
 
-export default Login;
+const Login = ({ onLogin, showToast }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [metaMaskLoading, setMetaMaskLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -92,6 +102,3 @@ export default Login;
 };
 
 export default Login;
-export default function LoginPage() {
-  return <div className="container mx-auto p-8 text-white">Login Page</div>;
-}
