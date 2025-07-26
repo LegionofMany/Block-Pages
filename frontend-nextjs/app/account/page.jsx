@@ -4,7 +4,7 @@ import { Box, Typography } from "@mui/material";
 import WalletBalances from "../../components/WalletBalances";
 import TokenSwap from "../../components/TokenSwap";
 
-
+ 
 const Account = () => {
   // Demo user for static rendering
   const user = {

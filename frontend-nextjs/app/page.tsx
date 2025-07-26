@@ -49,16 +49,24 @@ export default function Home() {
     setToast({ message, type });
   };
 
+  // Type guard for objects with message/code
+  function hasMessage(obj: unknown): obj is { message: string } {
+    return typeof obj === "object" && obj !== null && "message" in obj;
+  }
+  function hasCode(obj: unknown): obj is { code: string } {
+    return typeof obj === "object" && obj !== null && "code" in obj;
+  }
+
   const getErrorMessage = (e: unknown) => {
-    if (typeof e === "object" && e !== null && "message" in e) {
-      return (e as any).message;
+    if (hasMessage(e)) {
+      return e.message;
     }
     return String(e);
   };
 
   const getErrorCode = (e: unknown) => {
-    if (typeof e === "object" && e !== null && "code" in e) {
-      return (e as any).code;
+    if (hasCode(e)) {
+      return e.code;
     }
     return undefined;
   };

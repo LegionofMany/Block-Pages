@@ -49,9 +49,8 @@ export default function Navbar() {
         </Typography>
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
           {navLinks.map((link) => (
-            <Link key={link.title} href={link.path} passHref>
+            <Link key={link.title} href={link.path} passHref legacyBehavior>
               <Button
-                component="a"
                 sx={{
                   color: pathname === link.path ? "#00e1ff" : "#fff",
                   fontWeight: 600,
@@ -76,8 +75,8 @@ export default function Navbar() {
           <Box sx={{ width: 220 }} role="presentation" onClick={handleDrawerToggle}>
             <List>
               {navLinks.map((link) => (
-                <Link key={link.title} href={link.path} passHref>
-                  <ListItem button component="a" selected={pathname === link.path}>
+                <Link key={link.title} href={link.path} passHref legacyBehavior>
+                  <ListItem button selected={pathname === link.path}>
                     <ListItemText primary={link.title} />
                   </ListItem>
                 </Link>

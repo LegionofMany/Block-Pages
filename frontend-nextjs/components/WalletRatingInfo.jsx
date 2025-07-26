@@ -1,6 +1,6 @@
 // ...existing code from frontend/src/components/WalletRatingInfo.jsx...
 
-import React, { useEffect, useState, act as reactAct } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getWalletRating, getWalletFlaggedCount } from "../services/api";
 
@@ -24,11 +24,18 @@ function WalletRatingInfo({ walletAddress, showToast }) {
         showToast && showToast("Failed to fetch wallet info.", "error");
       } finally {
         // Use act from 'react' in test env to suppress warning
-        if (typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID && typeof reactAct === 'function') {
-          reactAct(() => setLoading(false));
-        } else {
-          setLoading(false);
+        if (typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID) {
+          // Dynamically require 'act' only in test environment
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { act } = require('react');
+            if (typeof act === 'function') {
+              act(() => setLoading(false));
+              return;
+            }
+          } catch (e) {}
         }
+        setLoading(false);
       }
     };
     update();
