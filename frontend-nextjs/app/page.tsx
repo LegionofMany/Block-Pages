@@ -19,11 +19,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+
 import Toast from "../components/Toast";
 import MoralisDemo from "../components/MoralisDemo";
 import Link from "next/link";
-// All wallet actions now use Next.js API routes
 import Navbar from "../components/Navbar";
+import { getOwner, getWalletStruct } from "../services/api.js";
 
 export default function Home() {
   // State for contract actions
@@ -156,8 +157,8 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      const owner = await getOwner();
-      setResult(`Contract owner: ${owner}`);
+      const data = await getOwner();
+      setResult(`Contract owner: ${data.owner || data}`);
     } catch (e) {
       setErrorMsg(getErrorMessage(e) || "Error fetching owner");
       showToast(getErrorMessage(e) || "Error fetching owner", "error");

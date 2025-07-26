@@ -6,7 +6,7 @@ import RateWallet from "../../components/RateWallet";
 import AIAnalyzer from "../../components/AIAnalyzer";
 import WalletRatingInfo from "../../components/WalletRatingInfo";
 import MetaMaskConnect from "../../components/MetaMaskConnect";
-import { flagWalletOnChain, rateWalletOnChain, getWalletInfoOnChain } from "../../services/contractService";
+// All wallet actions now use Next.js API routes
 import { Box } from '@mui/material';
 
 export default function WalletSearchPage() {
@@ -22,7 +22,12 @@ export default function WalletSearchPage() {
   const handleFlagOnChain = async () => {
     setLoadingFlag(true);
     try {
-      await flagWalletOnChain(wallet);
+      const res = await fetch("/api/wallet/flag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress: wallet, reason: "Flagged from WalletSearch" })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Error flagging wallet");
       // Optionally show a toast
     } catch (err) {
       // Optionally show a toast
@@ -33,7 +38,12 @@ export default function WalletSearchPage() {
   const handleRateOnChain = async () => {
     setLoadingRate(true);
     try {
-      await rateWalletOnChain(wallet, rating);
+      const res = await fetch("/api/wallet/rate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress: wallet, rating })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Error rating wallet");
       // Optionally show a toast
     } catch (err) {
       // Optionally show a toast
@@ -46,7 +56,11 @@ export default function WalletSearchPage() {
     if (userAddress && wallet) {
       setOnChainLoading(true);
       setOnChainError("");
-      getWalletInfoOnChain(wallet)
+      fetch(`/api/wallet/${wallet}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch on-chain info.");
+          return res.json();
+        })
         .then((info) => setOnChainInfo(info))
         .catch((err) => setOnChainError(err.message || "Failed to fetch on-chain info."))
         .finally(() => setOnChainLoading(false));
