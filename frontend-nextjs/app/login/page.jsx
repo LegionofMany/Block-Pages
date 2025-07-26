@@ -1,9 +1,11 @@
 
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { login } from "../../services/api";
 import { signInWithMetaMask } from "../../services/metamaskAuth";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +13,10 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
+  const [toast, setToast] = useState({ message: "", type: "info" });
+  const router = useRouter();
+
+  const showToast = (message, type = "info") => setToast({ message, type });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,14 +24,15 @@ const Login = () => {
     setError("");
     try {
       const res = await login(email, password);
-      // Optionally, implement local toast or redirect logic here
-      // Use router.push('/') if you want to redirect
+      showToast("Login successful! Welcome back.", "success");
+      setTimeout(() => router.push("/"), 1000);
     } catch (err) {
       if (err?.response?.status === 401) {
         setError(err?.response?.data?.error || "User not found or invalid credentials. Please register.");
       } else {
         setError(err?.response?.data?.error || "Login failed");
       }
+      showToast("Login failed", "error");
     } finally {
       setLoading(false);
     }
@@ -37,13 +44,15 @@ const Login = () => {
     try {
       const res = await signInWithMetaMask();
       if (res && res.user) {
-        // Optionally, implement local toast or redirect logic here
-        // Use router.push('/') if you want to redirect
+        showToast("MetaMask login successful! Welcome back.", "success");
+        setTimeout(() => router.push("/"), 1000);
       } else {
         setError("MetaMask login failed: No user returned from backend.");
+        showToast("MetaMask login failed", "error");
       }
     } catch (err) {
       setError(err.message || "MetaMask login failed");
+      showToast("MetaMask login failed", "error");
     } finally {
       setMetaMaskLoading(false);
     }
@@ -91,6 +100,11 @@ const Login = () => {
       >
         {metaMaskLoading ? "Connecting..." : "Sign in with MetaMask"}
       </Button>
+      {toast.message && (
+        <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
+          {toast.message}
+        </Alert>
+      )}
     </Box>
   );
 };

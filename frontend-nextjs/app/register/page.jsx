@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { register } from "../../services/api";
 import { signInWithMetaMask } from "../../services/metamaskAuth";
@@ -10,7 +11,10 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
+  const [toast, setToast] = useState({ message: "", type: "info" });
+  const router = useRouter();
 
+  const showToast = (message, type = "info") => setToast({ message, type });
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
@@ -19,9 +23,11 @@ export default function RegisterPage() {
     setError("");
     try {
       await register(form);
-      // Optionally show a toast or redirect
+      showToast("Registration successful! Redirecting to login...", "success");
+      setTimeout(() => router.push("/login"), 1200);
     } catch (err) {
       setError(err?.response?.data?.error || "Registration failed");
+      showToast("Registration failed", "error");
     } finally {
       setLoading(false);
     }
@@ -32,14 +38,19 @@ export default function RegisterPage() {
     setError("");
     try {
       await signInWithMetaMask();
-      // Optionally show a toast or redirect
+      showToast("MetaMask registration successful! Redirecting to login...", "success");
+      setTimeout(() => router.push("/login"), 1200);
     } catch (err) {
       if (err.response && err.response.status === 409) {
         setError("This wallet is already registered. Redirecting to login...");
+        showToast("This wallet is already registered. Redirecting to login...", "warning");
+        setTimeout(() => router.push("/login"), 1200);
       } else if (err.response && err.response.data && err.response.data.error) {
         setError("MetaMask registration failed: " + err.response.data.error);
+        showToast("MetaMask registration failed: " + err.response.data.error, "error");
       } else {
         setError(err.message || "MetaMask registration failed");
+        showToast(err.message || "MetaMask registration failed", "error");
       }
     } finally {
       setMetaMaskLoading(false);
@@ -70,6 +81,11 @@ export default function RegisterPage() {
         <img src={MetaMaskIcon} alt="MetaMask" style={{ width: 24, height: 24 }} />
         {metaMaskLoading ? "Connecting..." : "Register with MetaMask"}
       </Button>
+      {toast.message && (
+        <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
+          {toast.message}
+        </Alert>
+      )}
     </Box>
   );
 }

@@ -22,15 +22,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Toast from "../components/Toast";
 import MoralisDemo from "../components/MoralisDemo";
 import Link from "next/link";
-import {
-  flagWalletOnChain,
-  rateWalletOnChain,
-  getWalletInfoOnChain,
-  getWalletRatingOnChain,
-  getWalletFlaggedCountOnChain,
-  getOwner,
-  getWalletStruct,
-} from "../services/contractService";
+// All wallet actions now use Next.js API routes
 import Navbar from "../components/Navbar";
 
 export default function Home() {
@@ -76,7 +68,12 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      await flagWalletOnChain(walletAddress.trim());
+      const res = await fetch("/api/wallet/flag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress: walletAddress.trim(), reason: "Flagged from UI" })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Error flagging wallet");
       showToast("Wallet flagged successfully!", "success");
       setResult("Wallet flagged successfully!");
     } catch (e) {
@@ -91,7 +88,12 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      await rateWalletOnChain(walletAddress.trim(), rating);
+      const res = await fetch("/api/wallet/rate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress: walletAddress.trim(), rating })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Error rating wallet");
       showToast("Wallet rated successfully!", "success");
       setResult("Wallet rated successfully!");
     } catch (e) {
@@ -106,19 +108,12 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      const info = await getWalletInfoOnChain(walletAddress.trim());
+      const res = await fetch(`/api/wallet/${walletAddress.trim()}`);
+      if (!res.ok) throw new Error((await res.json()).error || "Error fetching wallet info");
+      const info = await res.json();
       setResult(info);
     } catch (e) {
-      if (
-        getErrorCode(e) === "BAD_DATA" ||
-        (getErrorMessage(e) && getErrorMessage(e).includes("could not decode result data"))
-      ) {
-        setErrorMsg(
-          "No on-chain data found for this wallet. It may not be registered or interacted with the contract."
-        );
-      } else {
-        setErrorMsg(getErrorMessage(e) || "Error fetching wallet info");
-      }
+      setErrorMsg(getErrorMessage(e) || "Error fetching wallet info");
       showToast(getErrorMessage(e) || "Error fetching wallet info", "error");
     }
     setLoading(false);
@@ -129,17 +124,12 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      const rating = await getWalletRatingOnChain(walletAddress.trim());
-      setResult(`Wallet rating: ${rating}`);
+      const res = await fetch(`/api/wallet/${walletAddress.trim()}/rating`);
+      if (!res.ok) throw new Error((await res.json()).error || "Error fetching wallet rating");
+      const data = await res.json();
+      setResult(`Wallet rating: ${data.rating}`);
     } catch (e) {
-      if (
-        getErrorCode(e) === "BAD_DATA" ||
-        (getErrorMessage(e) && getErrorMessage(e).includes("could not decode result data"))
-      ) {
-        setErrorMsg("No on-chain rating found for this wallet.");
-      } else {
-        setErrorMsg(getErrorMessage(e) || "Error fetching wallet rating");
-      }
+      setErrorMsg(getErrorMessage(e) || "Error fetching wallet rating");
       showToast(getErrorMessage(e) || "Error fetching wallet rating", "error");
     }
     setLoading(false);
@@ -150,17 +140,12 @@ export default function Home() {
     setResult(null);
     setErrorMsg("");
     try {
-      const count = await getWalletFlaggedCountOnChain(walletAddress.trim());
-      setResult(`Flagged count: ${count}`);
+      const res = await fetch(`/api/wallet/${walletAddress.trim()}/flagged-count`);
+      if (!res.ok) throw new Error((await res.json()).error || "Error fetching flagged count");
+      const data = await res.json();
+      setResult(`Flagged count: ${data.flaggedCount}`);
     } catch (e) {
-      if (
-        getErrorCode(e) === "BAD_DATA" ||
-        (getErrorMessage(e) && getErrorMessage(e).includes("could not decode result data"))
-      ) {
-        setErrorMsg("No on-chain flagged count found for this wallet.");
-      } else {
-        setErrorMsg(getErrorMessage(e) || "Error fetching flagged count");
-      }
+      setErrorMsg(getErrorMessage(e) || "Error fetching flagged count");
       showToast(getErrorMessage(e) || "Error fetching flagged count", "error");
     }
     setLoading(false);
