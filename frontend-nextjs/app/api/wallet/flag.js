@@ -16,12 +16,12 @@ export async function POST(req) {
       await wallet.save();
     }
     try {
-      await flagWalletOnChain(walletAddress);
-    } catch (error) {
+            await flagWalletOnChain(walletAddress);
+    } catch {
       // Optionally handle smart contract failure
     }
     return NextResponse.json(wallet);
-  } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Failed to flag wallet" }, { status: 500 });
   }
 }

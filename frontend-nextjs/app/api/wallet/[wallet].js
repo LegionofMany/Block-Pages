@@ -17,8 +17,8 @@ export async function GET(req, { params }) {
         rating: walletInfo.rating,
       };
       return NextResponse.json(walletWithInfo);
-    } catch (error) {
-      return NextResponse.json(wallet.toObject());
+    } catch {
+        return NextResponse.json(wallet.toObject()); // Removed unused parameter 'error'
     }
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

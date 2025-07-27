@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const walletAddress = params.wallet;
     const rating = await getWalletRatingOnChain(walletAddress);
     return NextResponse.json({ rating });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ rating: 0 });
   }
 }

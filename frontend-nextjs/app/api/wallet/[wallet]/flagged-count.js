@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const walletAddress = params.wallet;
     const flaggedCount = await getWalletFlaggedCountOnChain(walletAddress);
     return NextResponse.json({ flaggedCount });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ flaggedCount: 0 });
   }
 }

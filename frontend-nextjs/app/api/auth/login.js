@@ -18,7 +18,7 @@ export async function POST(req) {
     }
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
     return NextResponse.json({ token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Login failed. Please try again later." }, { status: 400 });
   }
 }
