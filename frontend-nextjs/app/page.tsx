@@ -23,7 +23,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Toast from "../components/Toast";
 import MoralisDemo from "../components/MoralisDemo";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
+
 import { getOwner, getWalletStruct } from "../services/api.js";
 
 export default function Home() {
@@ -198,7 +198,7 @@ export default function Home() {
         overflow: "hidden",
       }}
     >
-      <Navbar />
+
       <div className="container mx-auto p-4 md:p-6 lg:p-8 xl:p-10 min-h-screen flex flex-col justify-center items-center">
         <Paper
           elevation={8}

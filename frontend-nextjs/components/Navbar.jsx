@@ -1,3 +1,5 @@
+
+"use client";
 // ...existing code from frontend/src/components/Navbar.jsx...
 
 import React, { useState } from "react";
@@ -27,6 +29,7 @@ const navLinks = [
   { title: "Admin Directory", path: "/admin-directory" },
   { title: "Admin Analytics", path: "/admin-analytics" },
   { title: "Admin FAQ", path: "/admin-faq" },
+  { title: "Register", path: "/register" },
   { title: "Login", path: "/login" },
   { title: "Account", path: "/account" },
   { title: "Not Found", path: "/notfound" },
