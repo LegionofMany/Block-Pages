@@ -17,7 +17,15 @@ export async function POST(req) {
       return NextResponse.json({ error: "Incorrect password. Please try again or reset your password." }, { status: 401 });
     }
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
-    return NextResponse.json({ token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
+    const res = NextResponse.json({ user: { id: user._id, username: user.username, email: user.email, role: user.role } });
+    res.cookies.set("auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+    return res;
   } catch {
     return NextResponse.json({ error: "Login failed. Please try again later." }, { status: 400 });
   }
