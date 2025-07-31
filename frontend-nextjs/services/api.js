@@ -76,7 +76,22 @@ export async function getWalletStruct(address) {
   return await res.json();
 }
 export async function register(form) {
-  return { success: true };
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form)
+  });
+  if (!res.ok) {
+    let error = "Registration failed";
+    try {
+      const data = await res.json();
+      error = data.error || error;
+    } catch {}
+    const err = new Error(error);
+    err.response = res;
+    throw err;
+  }
+  return await res.json();
 }
 export async function getFlaggedWallets() {
   // Implement flagged wallets fetch logic here
@@ -85,9 +100,24 @@ export async function getFlaggedWallets() {
   ];
 }
 // Stub for missing API functions
+
 export async function login(email, password) {
-  // Implement login logic here
-  return { user: { email, username: "demo" } };
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+  if (!res.ok) {
+    let error = "Login failed";
+    try {
+      const data = await res.json();
+      error = data.error || error;
+    } catch {}
+    const err = new Error(error);
+    err.response = res;
+    throw err;
+  }
+  return await res.json();
 }
 
 export async function signInWithMetaMask() {

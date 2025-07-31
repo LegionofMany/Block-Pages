@@ -1,0 +1,30 @@
+import { NextResponse } from "next/server";
+import User from "../../../../models/User";
+import jwt from "jsonwebtoken";
+import connectDB from "../../../../utils/db";
+
+const JWT_SECRET = process.env.JWT_SECRET || "changeme";
+
+export async function POST(req) {
+  await connectDB();
+  try {
+    const { walletAddress } = await req.json();
+    if (!walletAddress) {
+      return NextResponse.json({ error: "walletAddress required" }, { status: 400 });
+    }
+    let user = await User.findOne({ walletAddress });
+    if (!user) {
+      user = await User.create({ walletAddress });
+    }
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    // Set cookie
+    return NextResponse.json({ user, token }, {
+      status: 200,
+      headers: {
+        "Set-Cookie": `auth-token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`
+      }
+    });
+  } catch (err) {
+    return NextResponse.json({ error: "MetaMask login failed" }, { status: 500 });
+  }
+}
