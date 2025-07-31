@@ -22,6 +22,10 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 import Toast from "../components/Toast";
 import MoralisDemo from "../components/MoralisDemo";
+import AIAnalyzer from "../components/AIAnalyzer";
+import GivingBlockCharities from "../components/GivingBlockCharities";
+import WalletBalances from "../components/WalletBalances";
+import WalletFlagsAndDonations from "../components/WalletFlagsAndDonations";
 import Link from "next/link";
 
 import { getOwner, getWalletStruct } from "../services/api.js";
@@ -473,6 +477,16 @@ export default function Home() {
             )}
           </Paper>
           <MoralisDemo />
+          <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+            AI Wallet Analysis
+          </Typography>
+          <AIAnalyzer walletAddress={walletAddress} showToast={showToast} />
+          <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+            Crypto Charities (The Giving Block)
+          </Typography>
+          <GivingBlockCharities />
           {/* Style buttons for high contrast and professional look */}
           <style>{`
             .MuiButton-containedPrimary, .MuiButton-containedSecondary {

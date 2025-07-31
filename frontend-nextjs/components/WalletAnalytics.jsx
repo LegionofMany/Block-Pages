@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { getWalletTransactionsBackend } from "../services/moralisBackend";
+import { getWalletBalance } from "../services/moralisService";
 
 export default function WalletAnalytics({ address }) {
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,7 @@ export default function WalletAnalytics({ address }) {
     if (!address) return;
     setLoading(true);
     setError("");
-    getWalletTransactionsBackend(address, "bsc")
+    // TODO: Implement getWalletTransactions in moralisService.js and use here
       .then((data) => {
         const txList = data.result || data;
         setTxs(txList);
@@ -34,10 +34,7 @@ export default function WalletAnalytics({ address }) {
       {error && <Typography color="error">{error}</Typography>}
       {!loading && !error && (
         <>
-          <Typography>Total Transactions: {stats.total}</Typography>
-          <Typography>Received: {stats.received}</Typography>
-          <Typography>Sent: {stats.sent}</Typography>
-          {/* Simple bar chart */}
+          <Typography>Analytics integration coming soon.</Typography>
           <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
             <Box sx={{ width: 40, height: stats.received * 3, bgcolor: 'primary.main' }} title="Received" />
             <Box sx={{ width: 40, height: stats.sent * 3, bgcolor: 'secondary.main' }} title="Sent" />

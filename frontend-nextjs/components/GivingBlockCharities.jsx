@@ -1,7 +1,7 @@
 // ...existing code from frontend/src/components/GivingBlockCharities.jsx...
 
 import React, { useEffect, useState } from "react";
-import { getGivingBlockCharities } from "../services/givingBlock";
+import { getCharities } from "../services/givingBlockService";
 import { Box, Typography, CircularProgress, Grid, Card, CardContent, CardMedia, Button, TextField } from "@mui/material";
 import DonateDialog from "./DonateDialog";
 
@@ -14,7 +14,7 @@ export default function GivingBlockCharities() {
   const [donateOpen, setDonateOpen] = useState(false);
 
   useEffect(() => {
-    getGivingBlockCharities()
+    getCharities()
       .then(setCharities)
       .catch(err => setError(err.message || "Failed to load charities."))
       .finally(() => setLoading(false));

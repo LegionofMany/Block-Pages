@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import User from "../../../backend/models/User";
+import User from "../../../models/User";
 import jwt from "jsonwebtoken";
 import { utils } from "ethers";
 const { verifyMessage } = utils;

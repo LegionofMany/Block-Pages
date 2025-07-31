@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Wallet from "../../../backend/models/Wallet";
+import Wallet from "../../../models/Wallet";
 import { flagWalletOnChain } from "../../../services/contractService";
 
 export async function POST(req) {

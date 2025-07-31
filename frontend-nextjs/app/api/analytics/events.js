@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import AnalyticsEvent from "../../../backend/models/AnalyticsEvent";
+import AnalyticsEvent from "../../../models/AnalyticsEvent";
 
 export async function GET(req) {
   try {

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Select, MenuItem, Paper } from "@mui/material";
-import { getWalletBalanceBackend, getWalletTransactionsBackend } from "../services/moralisBackend";
+import { getWalletBalance } from "../services/moralisService";
 
 export default function MoralisDemo() {
   const [wallet, setWallet] = useState("");
@@ -19,10 +19,9 @@ export default function MoralisDemo() {
     setTxs([]);
     try {
       const trimmedWallet = wallet.trim();
-      const bal = await getWalletBalanceBackend(trimmedWallet, chain);
+      const bal = await getWalletBalance(trimmedWallet, chain);
       setBalance(bal);
-      const tx = await getWalletTransactionsBackend(trimmedWallet, chain);
-      setTxs(tx.result || tx);
+      // TODO: Implement getWalletTransactions in moralisService.js and use here if needed
     } catch (e) {
       setError(e.message || "Error fetching data");
     } finally {

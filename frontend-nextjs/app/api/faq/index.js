@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Faq from "../../../backend/models/Faq";
+import Faq from "../../../models/Faq";
 
 export async function GET() {
   try {

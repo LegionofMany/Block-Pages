@@ -1,7 +1,8 @@
 // ...existing code from frontend/src/components/AIAnalyzer.jsx...
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { analyzeTransactions } from "../services/api";
+import { askAI } from "../services/aiService";
+
 
 function AIAnalyzer({ walletAddress, showToast }) {
   const [result, setResult] = useState(null);
@@ -10,8 +11,9 @@ function AIAnalyzer({ walletAddress, showToast }) {
   const handleAnalyze = async () => {
     setLoading(true);
     try {
-      const data = await analyzeTransactions(walletAddress);
-      setResult(data);
+      const prompt = `Analyze the transaction history for wallet address: ${walletAddress}. Provide insights and potential risks.`;
+      const data = await askAI(prompt);
+      setResult(data.result);
       showToast("AI analysis complete!", "success");
     } catch (error) {
       showToast(error.message || "Error analyzing transactions.", "error");
@@ -31,7 +33,7 @@ function AIAnalyzer({ walletAddress, showToast }) {
       </button>
       {result && (
         <pre className="bg-gray-100 p-2 mt-2 rounded text-xs overflow-x-auto">
-          {JSON.stringify(result, null, 2)}
+          {result}
         </pre>
       )}
     </div>

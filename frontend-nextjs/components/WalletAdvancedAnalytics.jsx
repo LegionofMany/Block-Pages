@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { getWalletTransactionsBackend } from "../services/moralisBackend";
+// import { getWalletTransactions } from "../services/moralisService";
 
 // Helper to group transactions by day
 function groupByDay(txs) {
@@ -25,7 +25,7 @@ export default function WalletAdvancedAnalytics({ address }) {
     setLoading(true);
     setError("");
     getWalletTransactionsBackend(address, "bsc")
-      .then((data) => {
+    // TODO: Implement getWalletTransactions in moralisService.js and use here
         const txList = data.result || data;
         setTxs(txList);
         // Group by day
@@ -56,12 +56,7 @@ export default function WalletAdvancedAnalytics({ address }) {
       {!loading && !error && (
         <>
           <Typography variant="subtitle2">Activity (Txs per Day):</Typography>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'end', mt: 1 }}>
-            {Object.entries(activity).map(([day, count]) => (
-              <Box key={day} sx={{ width: 18, height: count * 6, bgcolor: 'primary.main' }} title={day} />
-            ))}
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+          <Typography>Advanced analytics integration coming soon.</Typography>
             {Object.keys(activity).map(day => (
               <Typography key={day} variant="caption">{day.slice(0,5)}</Typography>
             ))}
