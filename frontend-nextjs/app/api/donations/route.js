@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import Donation from "../../../backend/models/Donation";
+import Donation from "../../../models/Donation";
+import connectDB from "../../../utils/db";
 
 export async function GET(req) {
+  await connectDB();
   const { searchParams } = new URL(req.url);
   const walletAddress = searchParams.get("walletAddress");
   if (!walletAddress) return NextResponse.json({ error: "walletAddress required" }, { status: 400 });
@@ -10,6 +12,7 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  await connectDB();
   const body = await req.json();
   const { walletAddress, donatedBy, txHash, amount } = body;
   if (!walletAddress || !donatedBy || !amount) return NextResponse.json({ error: "walletAddress, donatedBy, and amount required" }, { status: 400 });

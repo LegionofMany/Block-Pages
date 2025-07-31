@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import AnalyticsEvent from "../../../../backend/models/AnalyticsEvent";
+import AnalyticsEvent from "../../../../models/AnalyticsEvent";
+import connectDB from "../../../../utils/db";
 
 export async function GET() {
+  await connectDB();
   try {
     const events = await AnalyticsEvent.find().lean();
     return NextResponse.json(events);

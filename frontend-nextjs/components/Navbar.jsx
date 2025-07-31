@@ -1,55 +1,38 @@
 
 "use client";
-// ...existing code from frontend/src/components/Navbar.jsx...
-
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
+// Example navLinks and mainLinks, replace with your actual data
 const navLinks = [
   { title: "Home", path: "/" },
-  { title: "Search", path: "/search" },
   { title: "Directory", path: "/directory" },
-  { title: "Flagged", path: "/flagged" },
-  { title: "Assistance", path: "/assistance411" },
-  { title: "Admin Directory", path: "/admin-directory" },
-  { title: "Admin Analytics", path: "/admin-analytics" },
-  { title: "Admin FAQ", path: "/admin-faq" },
-  { title: "Register", path: "/register" },
-  { title: "Login", path: "/login" },
+  { title: "Analytics", path: "/admin-analytics" },
   { title: "Account", path: "/account" },
-  { title: "Not Found", path: "/notfound" },
-  { title: "Phone Lookup", path: "/phone-lookup" },
+  { title: "Login", path: "/login" },
+  { title: "Register", path: "/register" },
 ];
+const mainLinks = ["Home", "Directory", "Analytics", "Account", "Login", "Register"];
 
-// Define which links to show on large and small screens
-const mainLinksLarge = ["Home", "Search", "Directory", "Flagged", "Account"];
-const mainLinksSmall = ["Home", "Search"];
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
+export default function Navbar() {
   const pathname = usePathname();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [wallet, setWallet] = useState(null);
-
-  // Responsive: show more links on large screens, fewer on small
-  const isLargeScreen = typeof window !== 'undefined' && window.innerWidth >= 900;
-  const mainLinks = isLargeScreen ? mainLinksLarge : mainLinksSmall;
+  const [loading, setLoading] = useState(true);
 
   // Fetch user info on mount
   useEffect(() => {
@@ -83,6 +66,7 @@ const mainLinksSmall = ["Home", "Search"];
       return () => window.ethereum.removeListener("accountsChanged", handler);
     }
   }, []);
+
   // Connect wallet handler
   const handleConnectWallet = async () => {
     if (typeof window === "undefined" || !window.ethereum) {
@@ -205,4 +189,4 @@ const mainLinksSmall = ["Home", "Search"];
       </Toolbar>
     </AppBar>
   );
-// ...existing code...
+}

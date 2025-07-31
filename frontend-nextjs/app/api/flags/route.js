@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import Flag from "../../../backend/models/Flag";
+import Flag from "../../../models/Flag";
+import connectDB from "../../../utils/db";
 
 export async function GET(req) {
+  await connectDB();
   const { searchParams } = new URL(req.url);
   const walletAddress = searchParams.get("walletAddress");
   if (!walletAddress) return NextResponse.json({ error: "walletAddress required" }, { status: 400 });
@@ -10,6 +12,7 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  await connectDB();
   const body = await req.json();
   const { walletAddress, flaggedBy, txHash, reason } = body;
   if (!walletAddress || !flaggedBy) return NextResponse.json({ error: "walletAddress and flaggedBy required" }, { status: 400 });
