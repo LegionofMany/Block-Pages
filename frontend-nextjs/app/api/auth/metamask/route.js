@@ -24,7 +24,7 @@ export async function POST(req) {
         "Set-Cookie": `auth-token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`
       }
     });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "MetaMask login failed" }, { status: 500 });
   }
 }

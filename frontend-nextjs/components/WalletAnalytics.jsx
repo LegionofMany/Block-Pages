@@ -13,18 +13,7 @@ export default function WalletAnalytics({ address }) {
     setLoading(true);
     setError("");
     // TODO: Implement getWalletTransactions in moralisService.js and use here
-      .then((data) => {
-        const txList = data.result || data;
-        setTxs(txList);
-        let received = 0, sent = 0;
-        txList.forEach(tx => {
-          if (tx.to && tx.to.toLowerCase() === address.toLowerCase()) received++;
-          if (tx.from && tx.from.toLowerCase() === address.toLowerCase()) sent++;
-        });
-        setStats({ total: txList.length, received, sent });
-      })
-      .catch(() => setError("Failed to load analytics"))
-      .finally(() => setLoading(false));
+    setLoading(false);
   }, [address]);
 
   return (

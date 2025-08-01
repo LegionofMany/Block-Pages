@@ -24,8 +24,6 @@ import Toast from "../components/Toast";
 import MoralisDemo from "../components/MoralisDemo";
 import AIAnalyzer from "../components/AIAnalyzer";
 import GivingBlockCharities from "../components/GivingBlockCharities";
-import WalletBalances from "../components/WalletBalances";
-import WalletFlagsAndDonations from "../components/WalletFlagsAndDonations";
 import Link from "next/link";
 
 import { getOwner, getWalletStruct } from "../services/api.js";

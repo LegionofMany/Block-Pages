@@ -24,28 +24,8 @@ export default function WalletAdvancedAnalytics({ address }) {
     if (!address) return;
     setLoading(true);
     setError("");
-    getWalletTransactionsBackend(address, "bsc")
     // TODO: Implement getWalletTransactions in moralisService.js and use here
-        const txList = data.result || data;
-        setTxs(txList);
-        // Group by day
-        setActivity(groupByDay(txList));
-        // Find largest transaction
-        let maxTx = null;
-        txList.forEach(tx => {
-          if (!maxTx || Number(tx.value) > Number(maxTx.value)) maxTx = tx;
-        });
-        setLargestTx(maxTx);
-        // Counterparties
-        const cp = {};
-        txList.forEach(tx => {
-          const other = tx.from.toLowerCase() === address.toLowerCase() ? tx.to : tx.from;
-          cp[other] = (cp[other] || 0) + 1;
-        });
-        setCounterparties(cp);
-      })
-      .catch(() => setError("Failed to load advanced analytics"))
-      .finally(() => setLoading(false));
+    setLoading(false);
   }, [address]);
 
   return (
@@ -57,6 +37,7 @@ export default function WalletAdvancedAnalytics({ address }) {
         <>
           <Typography variant="subtitle2">Activity (Txs per Day):</Typography>
           <Typography>Advanced analytics integration coming soon.</Typography>
+          <Box>
             {Object.keys(activity).map(day => (
               <Typography key={day} variant="caption">{day.slice(0,5)}</Typography>
             ))}
