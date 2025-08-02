@@ -26,8 +26,13 @@ export default function RegisterPage() {
       showToast("Registration successful! Redirecting to login...", "success");
       setTimeout(() => router.push("/login"), 1200);
     } catch (err) {
-      setError(err?.response?.data?.error || "Registration failed");
-      showToast("Registration failed", "error");
+      if (err?.response?.status === 409) {
+        setError("A user with this email already exists. Please log in or use a different email.");
+        showToast("User already exists", "error");
+      } else {
+        setError(err?.response?.data?.error || "Registration failed");
+        showToast("Registration failed", "error");
+      }
     } finally {
       setLoading(false);
     }

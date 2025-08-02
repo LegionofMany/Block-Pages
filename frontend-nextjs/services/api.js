@@ -81,17 +81,18 @@ export async function register(form) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(form)
   });
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = {};
+  }
   if (!res.ok) {
-    let error = "Registration failed";
-    try {
-      const data = await res.json();
-      error = data.error || error;
-    } catch {}
-    const err = new Error(error);
-    err.response = res;
+    const err = new Error(data.error || "Registration failed");
+    err.response = { status: res.status, data };
     throw err;
   }
-  return await res.json();
+  return data;
 }
 export async function getFlaggedWallets() {
   // Implement flagged wallets fetch logic here
@@ -107,23 +108,21 @@ export async function login(email, password) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = {};
+  }
   if (!res.ok) {
-    let error = "Login failed";
-    try {
-      const data = await res.json();
-      error = data.error || error;
-    } catch {}
-    const err = new Error(error);
-    err.response = res;
+    const err = new Error(data.error || "Login failed");
+    err.response = { status: res.status, data };
     throw err;
   }
-  return await res.json();
+  return data;
 }
 
-export async function signInWithMetaMask() {
-  // Implement MetaMask login logic here
-  return { user: { username: "demo", wallet: "0x000..." } };
-}
+// signInWithMetaMask is implemented in services/metamaskAuth.js
 
 export async function lookupByPhone(phone) {
   // Implement phone lookup logic here

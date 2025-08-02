@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import { TextField, Button, Box, Typography, Alert, Stack } from "@mui/material";
 import { login } from "../../services/api";
 import { signInWithMetaMask } from "../../services/metamaskAuth";
 
@@ -14,6 +14,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [metaMaskLoading, setMetaMaskLoading] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "info" });
+  const [showRegister, setShowRegister] = useState(false);
   const router = useRouter();
 
   const showToast = (message, type = "info") => setToast({ message, type });
@@ -22,6 +23,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setShowRegister(false);
     try {
       const res = await login(email, password);
       showToast("Login successful! Welcome back.", "success");
@@ -29,6 +31,7 @@ const Login = () => {
     } catch (err) {
       if (err?.response?.status === 401) {
         setError(err?.response?.data?.error || "User not found or invalid credentials. Please register.");
+        setShowRegister(true);
       } else {
         setError(err?.response?.data?.error || "Login failed");
       }
@@ -51,7 +54,7 @@ const Login = () => {
         showToast("MetaMask login failed", "error");
       }
     } catch (err) {
-      setError(err.message || "MetaMask login failed");
+      setError("MetaMask login failed");
       showToast("MetaMask login failed", "error");
     } finally {
       setMetaMaskLoading(false);
@@ -59,9 +62,11 @@ const Login = () => {
   };
 
   return (
-    <Box className="blockchain-auth-card" sx={{ maxWidth: 400, mx: "auto", mt: 6, p: 3, borderRadius: 2, boxShadow: 2, bgcolor: 'background.paper', width: '100%' }}>
-      <Typography variant="h4" gutterBottom align="center">Login</Typography>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+    <Box maxWidth={400} mx="auto" mt={8} p={3} boxShadow={3} borderRadius={2}>
+      <Typography variant="h4" mb={2}>Login</Typography>
+      {toast.message && <Alert severity={toast.type} sx={{ mb: 2 }}>{toast.message}</Alert>}
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      <form onSubmit={handleSubmit}>
         <TextField
           label="Email"
           type="email"
@@ -69,7 +74,7 @@ const Login = () => {
           onChange={e => setEmail(e.target.value)}
           fullWidth
           margin="normal"
-          autoComplete="email"
+          required
         />
         <TextField
           label="Password"
@@ -78,14 +83,31 @@ const Login = () => {
           onChange={e => setPassword(e.target.value)}
           fullWidth
           margin="normal"
-          autoComplete="current-password"
+          required
         />
-        {error && <Alert severity="error">{error}</Alert>}
-        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 2 }}>
-          {loading ? "Logging in..." : "Login"}
-        </Button>
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            fullWidth
+          >
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+          {showRegister && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              onClick={() => router.push("/register")}
+            >
+              Register
+            </Button>
+          )}
+        </Stack>
       </form>
-      <Box sx={{ my: 2, display: 'flex', alignItems: 'center' }}>
+      <Box display="flex" alignItems="center" my={3}>
         <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
         <Typography sx={{ mx: 2, color: 'grey.600', fontWeight: 500 }}>or</Typography>
         <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
