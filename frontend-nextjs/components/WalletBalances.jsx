@@ -64,10 +64,21 @@ export default function WalletBalances({ address }) {
       </Box>
       {loading ? <CircularProgress /> : (
         <>
-          <Typography>Native Balance: {nativeBalance} {network === "ethereum" ? "ETH" : network === "bsc" ? "BNB" : "MATIC"}</Typography>
+          <Typography>
+            Native Balance: {typeof nativeBalance === "object" ? JSON.stringify(nativeBalance) : nativeBalance} {network === "ethereum" ? "ETH" : network === "bsc" ? "BNB" : "MATIC"}
+          </Typography>
           {tokenBalances.map((t, i) => {
             const symbol = COMMON_TOKENS[network][i]?.symbol || `Token ${i+1}`;
-            const balance = typeof t === "object" && t !== null && "balance" in t ? t.balance : "N/A";
+            let balance = "N/A";
+            if (typeof t === "object" && t !== null) {
+              if ("balance" in t && typeof t.balance !== "object") {
+                balance = t.balance;
+              } else {
+                balance = JSON.stringify(t);
+              }
+            } else if (typeof t !== "object") {
+              balance = t;
+            }
             return (
               <Typography key={symbol}>{symbol}: {balance}</Typography>
             );
