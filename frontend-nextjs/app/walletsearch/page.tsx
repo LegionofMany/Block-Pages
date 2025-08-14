@@ -15,12 +15,12 @@ export default function WalletSearchPage() {
   const [loadingFlag, setLoadingFlag] = useState(false);
   const [loadingRate, setLoadingRate] = useState(false);
   const [rating, setRating] = useState(1);
-  const [onChainInfo, setOnChainInfo] = useState(null);
+  const [onChainInfo, setOnChainInfo] = useState<{ flaggedCount?: number; rating?: number } | null>(null);
   const [onChainLoading, setOnChainLoading] = useState(false);
   const [onChainError, setOnChainError] = useState("");
 
   // Toast stub for now
-  const showToast = (msg, type) => {
+  const showToast = (msg: string, type?: string) => {
     // You can replace this with your own toast/notification system
     alert(`${type ? type + ': ' : ''}${msg}`);
   };
@@ -31,7 +31,14 @@ export default function WalletSearchPage() {
       await flagWalletOnChain(wallet);
       showToast("Wallet flagged on-chain!", "success");
     } catch (err) {
-      showToast(err.message || "Error flagging on-chain.", "error");
+      let errorMsg = "Error flagging on-chain.";
+      if (err && typeof err === "object" && "message" in err) {
+        const e = err as { message?: string };
+        if (typeof e.message === "string") {
+          errorMsg = e.message;
+        }
+      }
+      showToast(errorMsg, "error");
     } finally {
       setLoadingFlag(false);
     }
@@ -42,7 +49,14 @@ export default function WalletSearchPage() {
       await rateWalletOnChain(wallet, rating);
       showToast("Wallet rated on-chain!", "success");
     } catch (err) {
-      showToast(err.message || "Error rating on-chain.", "error");
+      let errorMsg = "Error rating on-chain.";
+      if (err && typeof err === "object" && "message" in err) {
+        const e = err as { message?: string };
+        if (typeof e.message === "string") {
+          errorMsg = e.message;
+        }
+      }
+      showToast(errorMsg, "error");
     } finally {
       setLoadingRate(false);
     }
