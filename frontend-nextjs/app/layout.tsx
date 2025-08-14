@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
-import { GlobalSnackbarProvider } from "../components/GlobalSnackbar";
+// import { GlobalSnackbarProvider } from "../components/GlobalSnackbar"; // Removed unused import
 import { AuthProvider } from "../context/AuthContext";
 import AuthGuard from "./AuthGuard";
 
