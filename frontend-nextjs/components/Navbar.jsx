@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -15,6 +14,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useAuth } from "../context/AuthContext"; // Import useAuth hook
 
 // Example navLinks and mainLinks, replace with your actual data
 const navLinks = [
@@ -30,33 +30,32 @@ const mainLinks = ["Home", "Directory", "Analytics", "Account", "Login", "Regist
 export default function Navbar() {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [wallet, setWallet] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, logout } = useAuth(); // Use user, loading, and logout from AuthContext
 
-  // Fetch user info on mount
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUser();
-    // Check for connected wallet on mount
-    if (typeof window !== "undefined" && window.ethereum && window.ethereum.selectedAddress) {
-      setWallet(window.ethereum.selectedAddress);
-    }
-  }, []);
+  // Fetch user info on mount - REMOVED, now handled by AuthContext
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     try {
+  //       const res = await fetch("/api/auth/me");
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         setUser(data.user);
+  //       } else {
+  //         setUser(null);
+  //       }
+  //     } catch {
+  //       setUser(null);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchUser();
+  //   // Check for connected wallet on mount
+  //   if (typeof window !== "undefined" && window.ethereum && window.ethereum.selectedAddress) {
+  //     setWallet(window.ethereum.selectedAddress);
+  //   }
+  // }, []);
 
   // Listen for wallet changes
   useEffect(() => {
@@ -86,11 +85,12 @@ export default function Navbar() {
     setWallet(null);
   };
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
-    window.location.href = "/login";
-  };
+  // handleLogout now comes from AuthContext
+  // const handleLogout = async () => {
+  //   await fetch("/api/auth/logout", { method: "POST" });
+  //   setUser(null);
+  //   window.location.href = "/login";
+  // };
 
   // Filter nav links based on auth state
   const filteredLinks = navLinks.filter(link => {
@@ -134,8 +134,8 @@ export default function Navbar() {
               </Button>
             </Link>
           ))}
-          {user && (
-            <Button color="inherit" onClick={handleLogout} sx={{ ml: 2, fontWeight: 600 }}>
+          {user && ( // Use user from AuthContext
+            <Button color="inherit" onClick={logout} sx={{ ml: 2, fontWeight: 600 }}> {/* Use logout from AuthContext */}
               Logout
             </Button>
           )}
@@ -156,13 +156,13 @@ export default function Navbar() {
             <List>
               {filteredLinks.map((link) => (
                 <Link key={link.title} href={link.path}>
-                  <ListItem button selected={pathname === link.path}>
+                  <ListItem button={true} selected={pathname === link.path}>
                     <ListItemText primary={link.title} />
                   </ListItem>
                 </Link>
               ))}
-              {user && (
-                <ListItem button onClick={handleLogout}>
+              {user && ( // Use user from AuthContext
+                <ListItem button onClick={logout}> {/* Use logout from AuthContext */}
                   <ListItemText primary="Logout" />
                 </ListItem>
               )}
@@ -177,7 +177,7 @@ export default function Navbar() {
                 </ListItem>
               )}
             </List>
-            {user && (
+            {user && ( // Use user from AuthContext
               <Box sx={{ p: 2, borderTop: "1px solid #eee" }}>
                 <Typography variant="body2" color="textSecondary">
                   Signed in as <b>{user.username || user.email}</b>

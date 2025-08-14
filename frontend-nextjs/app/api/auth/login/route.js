@@ -17,7 +17,11 @@ export async function POST(req) {
     if (!user || !user.password) {
       return NextResponse.json({ error: "User not found or password not set" }, { status: 401 });
     }
+    console.log("Login attempt for email:", email);
+    console.log("Password received:", password);
+    console.log("User from DB:", user);
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("bcrypt.compare result:", isMatch);
     if (!isMatch) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }

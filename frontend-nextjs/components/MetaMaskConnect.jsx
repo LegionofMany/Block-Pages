@@ -14,10 +14,30 @@ function MetaMaskConnect({ onConnect }) {
     }
     try {
       const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-      setAccount(accounts[0]);
-      if (onConnect) onConnect(accounts[0]);
+      const connectedAccount = accounts[0];
+      setAccount(connectedAccount);
+
+      // Call the new API route for MetaMask login
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'metamask-login', walletAddress: connectedAccount }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("MetaMask login successful:", data.message);
+        if (onConnect) onConnect(connectedAccount); // Pass the connected account to the parent
+      } else {
+        setError(data.message || "MetaMask login failed.");
+        console.error("MetaMask login failed:", data.message);
+      }
+
     } catch (err) {
-      setError(err.message || "Failed to connect wallet.");
+      setError(err.message || "Failed to connect wallet or login.");
     }
   };
 

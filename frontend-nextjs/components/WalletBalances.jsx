@@ -66,7 +66,7 @@ export default function WalletBalances({ address }) {
         <>
           <Typography>Native Balance: {nativeBalance} {network === "ethereum" ? "ETH" : network === "bsc" ? "BNB" : "MATIC"}</Typography>
           {tokenBalances.map((t, i) => (
-            <Typography key={i}>{COMMON_TOKENS[network][i].symbol}: {t.balance}</Typography>
+            <Typography key={COMMON_TOKENS[network][i].symbol || i}>{COMMON_TOKENS[network][i].symbol}: {t?.balance || "N/A"}</Typography>
           ))}
         </>
       )}

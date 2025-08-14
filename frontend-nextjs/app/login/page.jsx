@@ -1,21 +1,20 @@
-
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography, Alert, Stack } from "@mui/material";
-import { login } from "../../services/api";
-import { signInWithMetaMask } from "../../services/metamaskAuth";
+import MetaMaskConnect from "../../components/MetaMaskConnect"; // Import MetaMaskConnect component
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [metaMaskLoading, setMetaMaskLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Keep local loading for form submission
   const [toast, setToast] = useState({ message: "", type: "info" });
   const [showRegister, setShowRegister] = useState(false);
   const router = useRouter();
+  const { login, metamaskLogin } = useAuth(); // Use auth context functions
 
   const showToast = (message, type = "info") => setToast({ message, type });
 
@@ -25,39 +24,46 @@ const Login = () => {
     setError("");
     setShowRegister(false);
     try {
-      const res = await login(email, password);
-      showToast("Login successful! Welcome back.", "success");
-      setTimeout(() => router.push("/"), 1000);
-    } catch (err) {
-      if (err?.response?.status === 401) {
-        setError(err?.response?.data?.error || "User not found or invalid credentials. Please register.");
-        setShowRegister(true);
+      const result = await login(email, password); // Use login from AuthContext
+
+      if (result.success) {
+        showToast("Login successful! Welcome back.", "success");
+        console.log("Attempting redirect to home page...");
+        router.push("/");
       } else {
-        setError(err?.response?.data?.error || "Login failed");
+        const errorMessage = result.message || "Login failed";
+        setError(errorMessage);
+        if (errorMessage.includes("not found") || errorMessage.includes("credentials")) {
+          setShowRegister(true);
+        }
+        showToast("Login failed", "error");
       }
+    } catch (err) {
+      setError("An unexpected error occurred during login.");
       showToast("Login failed", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleMetaMaskLogin = async () => {
-    setMetaMaskLoading(true);
+  const handleMetaMaskConnect = async (account) => {
+    // This function is called when MetaMaskConnect successfully connects
+    // Now, use metamaskLogin from AuthContext to authenticate
     setError("");
     try {
-      const res = await signInWithMetaMask();
-      if (res && res.user) {
-        showToast("MetaMask login successful! Welcome back.", "success");
-        setTimeout(() => router.push("/"), 1000);
+      const result = await metamaskLogin(account); // Use metamaskLogin from AuthContext
+
+      if (result.success) {
+        showToast(`MetaMask connected and logged in with account: ${account}`, "success");
+        console.log("Attempting redirect to home page...");
+        router.push("/");
       } else {
-        setError("MetaMask login failed: No user returned from backend.");
+        setError(result.message || "MetaMask login failed.");
         showToast("MetaMask login failed", "error");
       }
     } catch (err) {
-      setError("MetaMask login failed");
+      setError("An unexpected error occurred during MetaMask login.");
       showToast("MetaMask login failed", "error");
-    } finally {
-      setMetaMaskLoading(false);
     }
   };
 
@@ -106,22 +112,23 @@ const Login = () => {
             </Button>
           )}
         </Stack>
+        <Button
+          variant="text"
+          color="primary"
+          fullWidth
+          onClick={() => router.push("/forgot-password")}
+          sx={{ mt: 1 }}
+        >
+          Forgot Password?
+        </Button>
       </form>
       <Box display="flex" alignItems="center" my={3}>
         <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
         <Typography sx={{ mx: 2, color: 'grey.600', fontWeight: 500 }}>or</Typography>
         <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
       </Box>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth
-        sx={{ mb: 1, fontWeight: 600 }}
-        onClick={handleMetaMaskLogin}
-        disabled={metaMaskLoading}
-      >
-        {metaMaskLoading ? "Connecting..." : "Sign in with MetaMask"}
-      </Button>
+      {/* Integrate MetaMaskConnect component */}
+      <MetaMaskConnect onConnect={handleMetaMaskConnect} />
       {toast.message && (
         <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
           {toast.message}

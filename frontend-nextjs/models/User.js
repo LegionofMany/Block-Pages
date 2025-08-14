@@ -8,6 +8,8 @@ const UserSchema = new mongoose.Schema({
     walletAddress: { type: String, unique: true, sparse: true },
     username: { type: String, unique: true, sparse: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    resetPasswordToken: String, // Added field
+    resetPasswordExpires: Date, // Added field
 }, { timestamps: true });
 
 UserSchema.pre("save", async function(next) {

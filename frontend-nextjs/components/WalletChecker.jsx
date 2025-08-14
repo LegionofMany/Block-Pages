@@ -55,8 +55,8 @@ function WalletChecker({ walletAddress, showToast }) {
           <h4 className="card-title">Recent Transactions:</h4>
           <ul>
             {transactions.slice(0, 5).map((tx) => (
-              <li key={tx.hash} className="card-content">
-                {tx.hash.substring(0, 20)}...
+              <li key={tx.hash || index} className="card-content">
+                {tx.hash ? `${tx.hash.substring(0, 20)}...` : "N/A"}
               </li>
             ))}
           </ul>

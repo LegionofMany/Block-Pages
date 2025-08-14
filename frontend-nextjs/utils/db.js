@@ -4,11 +4,8 @@ const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) {
     return;
   }
-  return mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: process.env.DB_NAME,
-  });
+  return mongoose.connect(process.env.MONGODB_URI);
 };
 
 export default connectDB;
+
