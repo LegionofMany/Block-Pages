@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -12,8 +11,14 @@ import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
+import InfoIcon from "@mui/icons-material/Info";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import { useAuth } from "../context/AuthContext"; // Import useAuth hook
 
 // Example navLinks and mainLinks, replace with your actual data
@@ -32,6 +37,7 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [wallet, setWallet] = useState(null);
   const { user, loading, logout } = useAuth(); // Use user, loading, and logout from AuthContext
+  const [infoOpen, setInfoOpen] = useState(false);
 
   // Fetch user info on mount - REMOVED, now handled by AuthContext
   // useEffect(() => {
@@ -106,7 +112,16 @@ export default function Navbar() {
   return (
     <AppBar position="static" sx={{ background: "#181f2a", boxShadow: "none" }}>
       <Toolbar sx={{ px: { xs: 1, sm: 2, md: 4 } }}>
-        {/* Custom menu button on the top left */}
+        {/* Info button at top left to show professional info dialog */}
+        <IconButton
+          color="inherit"
+          edge="start"
+          onClick={() => setInfoOpen(true)}
+          sx={{ mr: 1 }}
+        >
+          <InfoIcon />
+        </IconButton>
+        {/* Custom menu button for drawer (mobile) */}
         <IconButton
           color="inherit"
           edge="start"
@@ -118,6 +133,15 @@ export default function Navbar() {
         <Typography variant="h6" sx={{ flexGrow: 1, color: "#00e1ff", fontWeight: 700, fontSize: { xs: 20, sm: 24 } }}>
           BlockPages
         </Typography>
+        {/* Info Dialog for professional information */}
+        <Dialog open={infoOpen} onClose={() => setInfoOpen(false)}>
+          <DialogTitle>About BlockPages</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Welcome to BlockPages! This platform provides analytics, directory, and account management for blockchain wallets and users. Use the navigation bar to access all features. For help or more information, contact support or visit our FAQ.
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
         {/* Main links for large screens */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2, alignItems: "center" }}>
           {filteredLinks.filter(link => mainLinks.includes(link.title)).map((link) => (
@@ -155,32 +179,42 @@ export default function Navbar() {
           <Box sx={{ width: 260 }} role="presentation" onClick={() => setDrawerOpen(false)}>
             <List>
               {filteredLinks.map((link) => (
-                <Link key={link.title} href={link.path}>
-                  <ListItem button={true} selected={pathname === link.path}>
+                <ListItem key={link.title} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href={link.path}
+                    selected={pathname === link.path}
+                  >
                     <ListItemText primary={link.title} />
-                  </ListItem>
-                </Link>
+                  </ListItemButton>
+                </ListItem>
               ))}
               {user && ( // Use user from AuthContext
-                <ListItem button onClick={logout}> {/* Use logout from AuthContext */}
-                  <ListItemText primary="Logout" />
+                <ListItem disablePadding>
+                  <ListItemButton onClick={logout}> {/* Use logout from AuthContext */}
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
                 </ListItem>
               )}
               {/* Wallet Connect in Drawer */}
               {wallet ? (
-                <ListItem button onClick={handleDisconnectWallet}>
-                  <ListItemText primary={`${wallet.slice(0, 6)}...${wallet.slice(-4)}`} />
+                <ListItem disablePadding>
+                  <ListItemButton onClick={handleDisconnectWallet}>
+                    <ListItemText primary={`${wallet.slice(0, 6)}...${wallet.slice(-4)}`} />
+                  </ListItemButton>
                 </ListItem>
               ) : (
-                <ListItem button onClick={handleConnectWallet}>
-                  <ListItemText primary="Connect Wallet" />
+                <ListItem disablePadding>
+                  <ListItemButton onClick={handleConnectWallet}>
+                    <ListItemText primary="Connect Wallet" />
+                  </ListItemButton>
                 </ListItem>
               )}
             </List>
             {user && ( // Use user from AuthContext
               <Box sx={{ p: 2, borderTop: "1px solid #eee" }}>
                 <Typography variant="body2" color="textSecondary">
-                  Signed in as <b>{user.username || user.email}</b>
+                  Signed in as <b>{user.name || user.email}</b>
                 </Typography>
               </Box>
             )}

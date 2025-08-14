@@ -6,15 +6,26 @@ import MetaMaskConnect from "../../components/MetaMaskConnect"; // Import MetaMa
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
 
+
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Keep local loading for form submission
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "info" });
   const [showRegister, setShowRegister] = useState(false);
   const router = useRouter();
-  const { login, metamaskLogin } = useAuth(); // Use auth context functions
+  const { login, metamaskLogin, user } = useAuth();
+
+  React.useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const showToast = (message, type = "info") => setToast({ message, type });
 
@@ -24,12 +35,10 @@ const Login = () => {
     setError("");
     setShowRegister(false);
     try {
-      const result = await login(email, password); // Use login from AuthContext
-
+      const result = await login(email, password);
       if (result.success) {
         showToast("Login successful! Welcome back.", "success");
-        console.log("Attempting redirect to home page...");
-        router.push("/");
+        // router.push("/"); // Now handled by useEffect
       } else {
         const errorMessage = result.message || "Login failed";
         setError(errorMessage);
@@ -47,16 +56,12 @@ const Login = () => {
   };
 
   const handleMetaMaskConnect = async (account) => {
-    // This function is called when MetaMaskConnect successfully connects
-    // Now, use metamaskLogin from AuthContext to authenticate
     setError("");
     try {
-      const result = await metamaskLogin(account); // Use metamaskLogin from AuthContext
-
+      const result = await metamaskLogin(account);
       if (result.success) {
         showToast(`MetaMask connected and logged in with account: ${account}`, "success");
-        console.log("Attempting redirect to home page...");
-        router.push("/");
+        // router.push("/"); // Now handled by useEffect
       } else {
         setError(result.message || "MetaMask login failed.");
         showToast("MetaMask login failed", "error");
@@ -68,72 +73,96 @@ const Login = () => {
   };
 
   return (
-    <Box maxWidth={400} mx="auto" mt={8} p={3} boxShadow={3} borderRadius={2}>
-      <Typography variant="h4" mb={2}>Login</Typography>
-      {toast.message && <Alert severity={toast.type} sx={{ mb: 2 }}>{toast.message}</Alert>}
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Email"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
+    <Box maxWidth={420} mx="auto" mt={8} p={0}>
+      <Box sx={{ boxShadow: 4, borderRadius: 3, bgcolor: 'background.paper', p: 4, background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+        <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+          <LockOutlinedIcon color="primary" sx={{ fontSize: 48, mb: 1 }} />
+          <Typography variant="h4" fontWeight={700} letterSpacing={1} mb={1}>Login</Typography>
+          <Typography variant="body2" color="grey.700" align="center">
+            Welcome back! Sign in to access your BlockPages 411 account and Web3 tools.
+          </Typography>
+        </Box>
+        {toast.message && <Alert severity={toast.type} sx={{ mb: 2 }}>{toast.message}</Alert>}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             fullWidth
-          >
-            {loading ? "Logging in..." : "Login"}
-          </Button>
-          {showRegister && (
+            margin="normal"
+            required
+            autoComplete="email"
+          />
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+            autoComplete="current-password"
+          />
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Button
-              variant="outlined"
-              color="secondary"
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
               fullWidth
-              onClick={() => router.push("/register")}
+              startIcon={<LockOutlinedIcon />}
+              sx={{ fontWeight: 600 }}
             >
-              Register
+              {loading ? "Logging in..." : "Login"}
             </Button>
-          )}
-        </Stack>
-        <Button
-          variant="text"
-          color="primary"
-          fullWidth
-          onClick={() => router.push("/forgot-password")}
-          sx={{ mt: 1 }}
-        >
-          Forgot Password?
-        </Button>
-      </form>
-      <Box display="flex" alignItems="center" my={3}>
-        <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
-        <Typography sx={{ mx: 2, color: 'grey.600', fontWeight: 500 }}>or</Typography>
-        <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
+            {showRegister && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                startIcon={<PersonAddAltIcon />}
+                onClick={() => router.push("/register")}
+                sx={{ fontWeight: 600 }}
+              >
+                Register
+              </Button>
+            )}
+          </Stack>
+          <Button
+            variant="text"
+            color="primary"
+            fullWidth
+            onClick={() => router.push("/forgot-password")}
+            sx={{ mt: 1 }}
+          >
+            Forgot Password?
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            onClick={() => router.push("/register")}
+            sx={{ mt: 1, fontWeight: 600 }}
+            startIcon={<PersonAddAltIcon />}
+          >
+            Register
+          </Button>
+        </form>
+        <Box display="flex" alignItems="center" my={3}>
+          <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
+          <Typography sx={{ mx: 2, color: 'grey.600', fontWeight: 500 }}>or</Typography>
+          <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
+        </Box>
+        {/* Integrate MetaMaskConnect component */}
+        <MetaMaskConnect onConnect={handleMetaMaskConnect} />
+        {toast.message && (
+          <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
+            {toast.message}
+          </Alert>
+        )}
       </Box>
-      {/* Integrate MetaMaskConnect component */}
-      <MetaMaskConnect onConnect={handleMetaMaskConnect} />
-      {toast.message && (
-        <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
-          {toast.message}
-        </Alert>
-      )}
     </Box>
   );
 };

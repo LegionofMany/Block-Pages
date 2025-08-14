@@ -3,41 +3,60 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  walletAddress?: string; // Optional wallet address
+}
+
 interface AuthContextType {
-  user: any; // Replace 'any' with your user type
+  user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<any>;
   metamaskLogin: (walletAddress: string) => Promise<any>;
-  register: (email: string, password: string) => Promise<any>;
+  register: (name: string, email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null);
+  console.log("AuthProvider is rendering");
+  console.log("AuthProvider is rendering");
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
+    console.log("AuthContext: user", user);
+  }, [user]);
+
+  useEffect(() => {
+    console.log("AuthContext: loading", loading);
+  }, [loading]);
+
+  useEffect(() => {
+    const loadUser = async () => {
       try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
+        const response = await fetch('/api/auth/session');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user) {
+            setUser(data.user);
+          }
         }
       } catch (error) {
-        console.error("Failed to fetch user:", error);
-        setUser(null);
+        console.error("Failed to load user session:", error);
       } finally {
         setLoading(false);
       }
     };
-    checkUser();
+
+    loadUser();
   }, []);
+
+  
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -93,7 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const register = async (email: string, password: string) => {
+  const register = async (name: string, email: string, password: string) => {
     setLoading(true);
     try {
       const response = await fetch('/api/auth', {
@@ -101,12 +120,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ type: 'register', email, password }),
+        body: JSON.stringify({ type: 'register', name, email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        setUser(data.user);
         return { success: true, user: data.user };
       } else {
         return { success: false, message: data.message || "Registration failed" };

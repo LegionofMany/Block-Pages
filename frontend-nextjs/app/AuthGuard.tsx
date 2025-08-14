@@ -8,15 +8,23 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log("AuthGuard: auth", auth);
+
   const publicPaths = useMemo(() => ['/login', '/register', '/forgot-password'], []);
 
   useEffect(() => {
-    if (!auth?.loading && !auth?.user && !publicPaths.includes(pathname)) {
-      router.push('/login');
+    if (!auth?.loading) {
+      const isPublic = publicPaths.includes(pathname);
+      if (auth?.user && isPublic) {
+        router.push('/');
+      }
+      if (!auth?.user && !isPublic) {
+        router.push('/login');
+      }
     }
-  }, [auth, router, pathname, publicPaths]);
+  }, [auth?.loading, auth?.user, pathname, publicPaths, router]);
 
-  if ((auth?.loading || !auth?.user) && !publicPaths.includes(pathname)) {
+  if (auth?.loading) {
     return <div>Loading...</div>; // Or a proper loading spinner
   }
 

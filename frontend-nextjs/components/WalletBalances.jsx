@@ -65,9 +65,13 @@ export default function WalletBalances({ address }) {
       {loading ? <CircularProgress /> : (
         <>
           <Typography>Native Balance: {nativeBalance} {network === "ethereum" ? "ETH" : network === "bsc" ? "BNB" : "MATIC"}</Typography>
-          {tokenBalances.map((t, i) => (
-            <Typography key={COMMON_TOKENS[network][i].symbol || i}>{COMMON_TOKENS[network][i].symbol}: {t?.balance || "N/A"}</Typography>
-          ))}
+          {tokenBalances.map((t, i) => {
+            const symbol = COMMON_TOKENS[network][i]?.symbol || `Token ${i+1}`;
+            const balance = typeof t === "object" && t !== null && "balance" in t ? t.balance : "N/A";
+            return (
+              <Typography key={symbol}>{symbol}: {balance}</Typography>
+            );
+          })}
         </>
       )}
       <Box sx={{ mt: 3 }}>

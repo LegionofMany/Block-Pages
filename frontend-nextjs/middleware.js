@@ -15,9 +15,9 @@ export function middleware(request) {
   if (publicRoutes.some(route => pathname.startsWith(route))) {
     return NextResponse.next();
   }
-  // Check for auth cookie (replace 'auth-token' with your actual cookie name)
-  const token = request.cookies.get('auth-token');
-  if (!token) {
+  // Check for userId cookie (set after login/register)
+  const userId = request.cookies.get('userId');
+  if (!userId) {
     const loginUrl = new URL('/login', request.url);
     return NextResponse.redirect(loginUrl);
   }
