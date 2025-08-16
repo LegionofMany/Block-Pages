@@ -1,4 +1,6 @@
 "use client";
+import ConnectButton from "../components/ConnectButton";
+import WalletCard from "../components/WalletCard";
 import React, { useState } from "react";
 import {
   Box,
@@ -276,6 +278,40 @@ export default function Home() {
             </Link>
           </div>
           <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+              Multi-Wallet Login
+            </Typography>
+            <ConnectButton />
+          </Box>
+          <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+              Wallet Analytics Preview
+            </Typography>
+            <WalletCard />
+            <Link href="/wallet/0x000000000000000000000000000000000000dead" className="button">
+              View Full Analytics
+            </Link>
+          </Box>
+          <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+              Donation Leaderboard
+            </Typography>
+            <Link href="/donate" className="button">
+              View Leaderboard
+            </Link>
+          </Box>
+          <Divider sx={{ my: 4, bgcolor: "#00e1ff" }} />
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" className="mb-4 text-white" sx={{ fontWeight: 600 }}>
+              Admin Dashboard
+            </Typography>
+            <Link href="/admin" className="button">
+              Go to Admin Dashboard
+            </Link>
+          </Box>
           <Typography
             variant="h5"
             className="mb-4 text-white"

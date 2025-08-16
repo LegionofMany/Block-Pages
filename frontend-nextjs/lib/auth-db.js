@@ -1,8 +1,1 @@
-// frontend-nextjs/lib/auth-db.js
-
-export const users = [];
-export let userIdCounter = 1;
-
-export const incrementUserIdCounter = () => {
-  userIdCounter++;
-};
+// File removed. Use auth-db.ts for all imports.

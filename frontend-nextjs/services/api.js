@@ -1,10 +1,18 @@
+const getApiBase = () => {
+  if (typeof window !== "undefined") {
+    // Client-side: use relative URLs
+    return "";
+  }
+  // Server-side: use env or fallback
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+};
 // Analytics
 export async function getAnalyticsEvents(params) {
   const url = new URL("/api/analytics/events", window.location.origin);
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value) url.searchParams.append(key, value);
   });
-  const res = await fetch(url.toString());
+  const res = await fetch(`${getApiBase()}${url.toString()}`);
   if (!res.ok) throw new Error("Failed to fetch analytics events");
   return await res.json();
 }
@@ -16,7 +24,7 @@ export async function upsertDirectoryEntry(form) {
 
 // FAQ
 export async function getFaqs() {
-  const res = await fetch("/api/faq");
+  const res = await fetch(`${getApiBase()}/api/faq`);
   if (!res.ok) throw new Error("Failed to fetch FAQs");
   return await res.json();
 }
@@ -32,7 +40,7 @@ export async function deleteFaq(id) {
 
 // Assistance 411
 export async function ask411(question) {
-  const res = await fetch("/api/assistance/ask", {
+  const res = await fetch(`${getApiBase()}/api/assistance/ask`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ question })
@@ -49,34 +57,34 @@ export async function rateWallet(walletAddress, rating) {
   return { success: true };
 }
 export async function getWalletInfo(address) {
-  const res = await fetch(`/api/wallet/${encodeURIComponent(address)}`);
+  const res = await fetch(`${getApiBase()}/api/wallet/${encodeURIComponent(address)}`);
   if (!res.ok) throw new Error("Failed to fetch wallet info");
   return await res.json();
 }
 export async function getWalletRating(address) {
-  const res = await fetch(`/api/wallet/${encodeURIComponent(address)}/rating`);
+  const res = await fetch(`${getApiBase()}/api/wallet/${encodeURIComponent(address)}/rating`);
   if (!res.ok) throw new Error("Failed to fetch wallet rating");
   return await res.json();
 }
 export async function getWalletFlaggedCount(address) {
-  const res = await fetch(`/api/wallet/${encodeURIComponent(address)}/flagged-count`);
+  const res = await fetch(`${getApiBase()}/api/wallet/${encodeURIComponent(address)}/flagged-count`);
   if (!res.ok) throw new Error("Failed to fetch flagged count");
   return await res.json();
 }
 
 export async function getOwner() {
-  const res = await fetch("/api/wallet/owner");
+  const res = await fetch(`${getApiBase()}/api/wallet/owner`);
   if (!res.ok) throw new Error("Failed to fetch contract owner");
   return await res.json();
 }
 
 export async function getWalletStruct(address) {
-  const res = await fetch(`/api/wallet/struct/${encodeURIComponent(address)}`);
+  const res = await fetch(`${getApiBase()}/api/wallet/struct/${encodeURIComponent(address)}`);
   if (!res.ok) throw new Error("Failed to fetch wallet struct");
   return await res.json();
 }
 export async function register(form) {
-  const res = await fetch("/api/auth/register", {
+  const res = await fetch(`${getApiBase()}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(form)
@@ -103,7 +111,7 @@ export async function getFlaggedWallets() {
 // Stub for missing API functions
 
 export async function login(email, password) {
-  const res = await fetch("/api/auth/login", {
+  const res = await fetch(`${getApiBase()}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -133,13 +141,13 @@ import axios from "axios";
 const BACKEND_URL = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
 
 export async function searchDirectory(query) {
-  const res = await fetch(`/api/directory/search?q=${encodeURIComponent(query)}`);
+  const res = await fetch(`${getApiBase()}/api/directory/search?q=${encodeURIComponent(query)}`);
   if (!res.ok) throw new Error("No results found.");
   return await res.json();
 }
 
 export async function scrapeWalletInfo(address) {
-  const res = await fetch(`/api/directory/scrape?address=${encodeURIComponent(address)}`);
+  const res = await fetch(`${getApiBase()}/api/directory/scrape?address=${encodeURIComponent(address)}`);
   if (!res.ok) throw new Error("Failed to fetch");
   return await res.json();
 }

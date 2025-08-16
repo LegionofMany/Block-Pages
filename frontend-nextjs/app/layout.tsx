@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 // import { GlobalSnackbarProvider } from "../components/GlobalSnackbar"; // Removed unused import
 import { AuthProvider } from "../context/AuthContext";
 import AuthGuard from "./AuthGuard";
+import { WalletProvider } from "../context/WalletContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +31,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          <Navbar />
-          <AuthGuard>{children}</AuthGuard>
+          <WalletProvider>
+            <Navbar />
+            <AuthGuard>{children}</AuthGuard>
+          </WalletProvider>
         </AuthProvider>
       </body>
     </html>

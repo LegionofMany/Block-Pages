@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import ConnectButton from "./ConnectButton";
+import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -163,16 +164,10 @@ export default function Navbar() {
               Logout
             </Button>
           )}
-          {/* Wallet Connect Button */}
-          {wallet ? (
-            <Button color="inherit" sx={{ ml: 2, fontWeight: 600 }} onClick={handleDisconnectWallet} title={wallet}>
-              {wallet.slice(0, 6)}...{wallet.slice(-4)}
-            </Button>
-          ) : (
-            <Button color="inherit" sx={{ ml: 2, fontWeight: 600 }} onClick={handleConnectWallet}>
-              Connect Wallet
-            </Button>
-          )}
+          {/* Multi-wallet ConnectButton always visible */}
+          <Box sx={{ ml: 2 }}>
+            <ConnectButton />
+          </Box>
         </Box>
         {/* Drawer for all links, toggled by menu button */}
         <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>

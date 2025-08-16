@@ -1,0 +1,1 @@
+// wagmi/viem config (scaffold)

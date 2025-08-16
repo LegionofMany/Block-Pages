@@ -10,7 +10,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   console.log("AuthGuard: auth", auth);
 
-  const publicPaths = useMemo(() => ['/login', '/register', '/forgot-password'], []);
+  const publicPaths = useMemo(() => ['/login', '/register', '/forgot-password', '/connect-wallet'], []);
 
   useEffect(() => {
     if (!auth?.loading) {

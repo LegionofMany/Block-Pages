@@ -155,8 +155,15 @@ const Login = () => {
           <Typography sx={{ mx: 2, color: 'grey.600', fontWeight: 500 }}>or</Typography>
           <Box sx={{ flex: 1, height: 1, bgcolor: 'grey.300' }} />
         </Box>
-        {/* Integrate MetaMaskConnect component */}
-        <MetaMaskConnect onConnect={handleMetaMaskConnect} />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2, fontWeight: 600 }}
+          onClick={() => router.push("/connect-wallet")}
+        >
+          Connect Wallet
+        </Button>
         {toast.message && (
           <Alert severity={toast.type} sx={{ mt: 2 }} onClose={() => setToast({ message: "", type: "info" })}>
             {toast.message}

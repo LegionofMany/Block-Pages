@@ -3,12 +3,19 @@ import { cookies } from 'next/headers';
 import { users } from '../../../../lib/auth-db';
 
 export async function GET() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const userId = cookieStore.get('userId');
+  const userAddress = cookieStore.get('userAddress');
 
   if (userId) {
     // In a real app, fetch user from DB using userId
-    const user = users.find(u => u.id === parseInt(userId.value));
+    const user = users.find(u => u.id === userId.value);
+    if (user) {
+      return NextResponse.json({ user }, { status: 200 });
+    }
+  }
+  if (userAddress) {
+    const user = users.find(u => u.walletAddress === userAddress.value);
     if (user) {
       return NextResponse.json({ user }, { status: 200 });
     }
